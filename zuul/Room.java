@@ -16,10 +16,17 @@ import java.util.Iterator;
  * @version 1.0 (February 2002)
  */
 
+enum Direction {
+    EAST,
+    SOUTH,
+    WEST,
+    NORTH,
+}
+
 class Room 
 {
     private String description;
-    private HashMap exits;        // stores exits of this room.
+    private HashMap<Direction, Room> exits;        // stores exits of this room.
 
     /**
      * Create a room described "description". Initially, it has no exits.
@@ -29,13 +36,13 @@ class Room
     public Room(String description) 
     {
         this.description = description;
-        exits = new HashMap();
+        exits = new HashMap<Direction, Room>();
     }
 
     /**
      * Define an exit from this room.
      */
-    public void setExit(String direction, Room neighbor) 
+    public void setExit(Direction direction, Room neighbor) 
     {
         exits.put(direction, neighbor);
     }
@@ -76,9 +83,9 @@ class Room
      * Return the room that is reached if we go from this room in direction
      * "direction". If there is no room in that direction, return null.
      */
-    public Room getExit(String direction) 
+    public Room getExit(Direction direction) 
     {
-        return (Room)exits.get(direction);
+        return exits.get(direction);
     }
 }
 
