@@ -99,8 +99,15 @@ class QuitAction extends Action {
     }
 }
 
-class NoOp extends Action {
+class NoOpAction extends Action {
+    private Actionable actionable;
+
+    public NoOpAction(Actionable actionable) {
+        this.actionable = actionable;
+    }
+
     public boolean execute() {
+        actionable.output("What? I'll just stay here.\n");
         return true;
     }
 }
@@ -114,13 +121,20 @@ class CommandMapper {
     };
 
     private Actionable actionable;
+    private NoOpAction noOpAction;
 
     public CommandMapper(Actionable actionable) {
         this.actionable = actionable;
+        this.noOpAction = new NoOpAction(actionable);
     }
 
     public Action getAction(Command command) {
         String commandWord = command.getCommandWord();
+
+        if (commandWord == null) {
+            return noOpAction;
+        }
+        
         switch (commandWord) {
             case "go":
                 return new GoRoomAction(actionable, command);
@@ -129,7 +143,7 @@ class CommandMapper {
             case "help":
                 return new HelpAction(actionable, CommandMapper.validCommands);
             default:
-                return new NoOp();
+                return noOpAction;
         }
     }
 
