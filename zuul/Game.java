@@ -21,18 +21,17 @@ class Game implements Actionable
     private Room currentRoom;
     private CommandMapper commandMapper;
 
- public static void main(String [] args)
-    {
-        Game game = new Game( );
+    public static void main(String [] args) {
+        Game game = new Game();
+        game.commandMapper = new CommandMapper(game);
         game.play();
-
     }
 
         
     /**
      * Create the game and initialise its internal map.
      */
-    public Game() 
+    private Game() 
     {
         createRooms();
         parser = new Parser();
@@ -50,8 +49,8 @@ class Game implements Actionable
         theatre = new Room("in a lecture theatre");
         pub = new Room("in the campus pub");
         pubBasement = new Room("in the dark and mysterious basement of the pub. there's a door here.");
-        tunnel = new Room("it's dark and dirty in here. you're in a tunnel now. wonder who built it.");
-        secretClub = new Room("there's a pool table here and a bar. you're in a secret club.");
+        tunnel = new Room("in a tunnel now. it's dark and dirty in here. wonder who built it");
+        secretClub = new Room("in a secret club. there's a pool table here and a bar");
         lab = new Room("in a computing lab");
         office = new Room("in the computing admin office");
 
@@ -78,8 +77,6 @@ class Game implements Actionable
 
     public void play() 
     {            
-        commandMapper = new CommandMapper(this);
-
         printWelcome();
                 
         boolean finished = false;
