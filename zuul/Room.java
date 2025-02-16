@@ -1,20 +1,7 @@
 import java.util.Set;
 import java.util.HashMap;
 import java.util.Iterator;
-
-/*
- * Class Room - a room in an adventure game.
- *
- * This class is the main class of the "World of Zuul" application. 
- * "World of Zuul" is a very simple, text based adventure game.  
- *
- * A "Room" represents one location in the scenery of the game.  It is 
- * connected to other rooms via exits.  For each existing exit, the room 
- * stores a reference to the neighboring room.
- * 
- * @author  Michael Kolling and David J. Barnes
- * @version 1.0 (February 2002)
- */
+import java.util.Collection;
 
 enum Direction {
     EAST,
@@ -25,20 +12,17 @@ enum Direction {
     UP,
 }
 
-class Room 
-{
+class Room {
     private String description;
-    private HashMap<Direction, Room> exits;        // stores exits of this room.
+    private HashMap<Direction, Room> exits;
 
-    /**
-     * Create a room described "description". Initially, it has no exits.
-     * "description" is something like "in a kitchen" or "in an open court 
-     * yard".
-     */
+    private HashMap<String, Item> items;
+
     public Room(String description) 
     {
         this.description = description;
         exits = new HashMap<Direction, Room>();
+        items = new HashMap<String, Item>();
     }
 
     /**
@@ -63,10 +47,26 @@ class Room
         }
     }
 
-    /**
-     * Return the description of the room (the one that was defined in the
-     * constructor).
-     */
+
+    public void addItem(Item item) {
+        items.put(item.name, item);
+    }
+
+    public Item getItem(String name) {
+        return items.get(name);
+    }
+
+    public Item removeItem(String name) {
+        return items.remove(name);
+    }
+
+
+    public void encounter(Player player) {
+        for (Item item : items.values()) {
+            item.encounter(player);
+        }
+    }
+
     public String getShortDescription()
     {
         return description;
@@ -80,6 +80,13 @@ class Room
     public String getLongDescription()
     {
         return "You are " + description + ".\n" + getExitString();
+    }
+
+
+    
+    public Room getExit(Direction direction) 
+    {
+        return exits.get(direction);
     }
 
     private Direction getOppositeDirection(Direction direction) {
@@ -111,16 +118,20 @@ class Room
         Set keys = exits.keySet();
         for(Iterator iter = keys.iterator(); iter.hasNext(); )
             returnString += " " + iter.next();
-        return returnString;
+        return returnString + "\n";
     }
 
-    /**
-     * Return the room that is reached if we go from this room in direction
-     * "direction". If there is no room in that direction, return null.
-     */
-    public Room getExit(Direction direction) 
-    {
-        return exits.get(direction);
+    public String getItemsString() {
+        Collection<Item> values = items.values();
+        if (values.isEmpty()) {
+            return "Room is empty \n";
+        }
+        String returnString = "Items: ";
+        for (Item item: values) {
+            returnString += item.name + " ";
+        }
+        return returnString + "\n";
     }
+
 }
 

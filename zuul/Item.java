@@ -1,11 +1,11 @@
 
-abstract class GameItem {
-    private String description;
+abstract class Item {
+    public final String name;
 
-    public String getDescription() {
-        return description;
+    public Item(String name) {
+        this.name = name;
     }
 
-    public abstract void encounterAction();
-    public abstract void interactAction();
+    public void encounter(Player player) {};
+    public void interact(Player player) {};
 }

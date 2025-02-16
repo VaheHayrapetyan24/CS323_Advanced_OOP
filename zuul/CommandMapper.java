@@ -6,8 +6,8 @@ interface Actionable {
     public Room getCurrentRoom();
     public void setCurrentRoom(Room room);
 
-    public int getHealth();
-    public void setHealth();
+    public Player getPlayer();
+    // public void setHealth();
 
     public void output(String string);
 }
@@ -38,9 +38,17 @@ class GoRoomAction extends Action {
 
         if (nextRoom == null) {
             actionable.output("No exit " + direction + "\n");
-        } else {
-            actionable.setCurrentRoom(nextRoom);
-            actionable.output(nextRoom.getLongDescription());
+            return true;
+        } 
+
+        Player player = actionable.getPlayer();
+        actionable.setCurrentRoom(nextRoom);
+        actionable.output(nextRoom.getLongDescription());
+        nextRoom.encounter(player);
+
+        if (player.getHealth() == 0) {
+            actionable.output("Alas, you brave soul, your jurney ends here. Rest well\n");
+            return false;
         }
 
         return true;
@@ -102,6 +110,139 @@ class QuitAction extends Action {
     }
 }
 
+class LookAction extends Action {
+    private Actionable actionable;
+
+    public LookAction(Actionable actionable) {
+        this.actionable = actionable;
+    }
+
+    public boolean execute() {
+        actionable.output(actionable.getCurrentRoom().getItemsString());
+        return true;
+    }
+}
+
+
+class StatusAction extends Action {
+    private Actionable actionable;
+    private Command command;
+
+    public StatusAction(Actionable actionable) {
+        this.actionable = actionable;
+    }
+
+    public boolean execute() {
+        Player player = actionable.getPlayer();
+        actionable.output("Health: " + player.getHealth() + "/" + player.MAX_HEALTH + "\n");
+        actionable.output("Backpack weight: " + player.getBackpackWeight() + "/" + player.MAX_WEIGHT + "\n");
+        actionable.output(player.getBackpackItems());
+        return true;
+    }
+}
+
+
+
+class StoreAction extends Action {
+    private Actionable actionable;
+    private Command command;
+
+    public StoreAction(Actionable actionable, Command command) {
+        this.actionable = actionable;
+        this.command = command;
+    }
+
+    public boolean execute() {
+        if(!command.hasSecondWord()) {
+            actionable.output("Store what?\n");
+            return true;
+        }
+
+        String name = command.getSecondWord();
+        Room room = actionable.getCurrentRoom();
+        Item item = room.getItem(name);
+        if (item == null) {
+            actionable.output("Where'd you see that?\n");
+            return true;
+        }
+
+        if (!(item instanceof Food)) {
+            actionable.output("You can't add that to your backpack\n");
+            return true;
+        }
+
+        if (!actionable.getPlayer().willFitInBackpack((Food)item)) {
+            actionable.output("You don't have that much space in your backpack\n");
+            return true;
+        }
+
+        room.removeItem(name);
+        actionable.getPlayer().addToBackpack((Food)item);
+        return true;
+    }
+}
+
+class EatAction extends Action {
+    private Actionable actionable;
+    private Command command;
+
+    public EatAction(Actionable actionable, Command command) {
+        this.actionable = actionable;
+        this.command = command;
+    }
+
+    public boolean execute() {
+        if(!command.hasSecondWord()) {
+            actionable.output("Eat what?\n");
+            return true;
+        }
+
+        String name = command.getSecondWord();
+        
+        
+        if (!tryToEatFromRoom(name)) {
+            tryToEatFromBackpack(name);
+        }
+        
+        return true;
+    }
+
+    private boolean tryToEatFromRoom(String name) {
+        Room room = actionable.getCurrentRoom();
+        Item roomItem = room.getItem(name);
+        if (roomItem == null) {
+            return false;
+        }
+
+        if (!(roomItem instanceof Food)) {
+            actionable.output("You don't have the stomach for that.\n");
+            return true;
+        }
+
+        room.removeItem(name);
+        actionable.getPlayer().increaseHealth(((Food)roomItem).healthBoost);
+        return true;
+    }
+
+    private void tryToEatFromBackpack(String name) {
+        Player player = actionable.getPlayer();
+
+        Item backpackItem = player.getFromBackpack(name);
+        if (backpackItem == null) {
+            actionable.output("A stomach full of nothing.\n");
+            return;
+        }
+
+        if (!(backpackItem instanceof Food)) {
+            actionable.output("You don't have the stomach for that.\n");
+            return;
+        }
+
+        player.removeFromBackpack(name);
+        player.increaseHealth(((Food)backpackItem).healthBoost);
+    }
+}
+
 class NoOpAction extends Action {
     private Actionable actionable;
 
@@ -118,8 +259,11 @@ class NoOpAction extends Action {
 
 
 
+
+
+
 class CommandMapper {
-    private static final String[] validCommands = {"go", "quit", "help"};
+    private static final String[] validCommands = {"go", "status", "look", "store", "eat", "quit", "help"};
     private static final Map<String, Function<Command, Action>> commandMap = new HashMap<>();
     private Actionable actionable;
 
@@ -130,8 +274,14 @@ class CommandMapper {
 
     private void registerCommands() {
         commandMap.put("go", cmd -> new GoRoomAction(actionable, cmd));
+        commandMap.put("status", cmd -> new StatusAction(actionable));
+        commandMap.put("look", cmd -> new LookAction(actionable));
+        commandMap.put("store", cmd -> new StoreAction(actionable, cmd));
+        commandMap.put("eat", cmd -> new EatAction(actionable, cmd));
+
         commandMap.put("quit", cmd -> new QuitAction(actionable, cmd));
         commandMap.put("help", cmd -> new HelpAction(actionable, validCommands));
+
     }
 
     public Action getAction(Command command) {

@@ -1,8 +1,8 @@
 import java.util.HashMap;
 
 class Player {
-    private final int MAX_WEIGHT = 10;
-    private final int MAX_HEALTH = 100;
+    public final int MAX_WEIGHT = 10;
+    public final int MAX_HEALTH = 100;
 
     private HashMap<String, Food> backpack;
     private int health;
@@ -12,13 +12,21 @@ class Player {
         health = MAX_HEALTH;
     }
 
-    public void eat(String name) {
-        if (!isInBackpack(name)) {
-            return;
-        }
+    // public void eat(String name) {
+    //     if (!isInBackpack(name)) {
+    //         return;
+    //     }
 
-        Food food = removeFromBackpack(name);
-        health = Math.min(MAX_HEALTH, health + food.healthBoost);
+    //     Food food = removeFromBackpack(name);
+    //     health = Math.min(MAX_HEALTH, health + food.healthBoost);
+    // }
+
+    public String getBackpackItems() {
+        return "Backpack items: " + String.join(", ", backpack.keySet()) + ".";
+    }
+
+    public Food getFromBackpack(String name) {
+        return backpack.get(name);
     }
 
     public boolean isInBackpack(String name) {
@@ -31,14 +39,14 @@ class Player {
 
     public void addToBackpack(Food food) {
         // It's caller's responsibility to check if can add or no
-        if (!canAddTobackpack(food)) {
+        if (!willFitInBackpack(food)) {
             return;
         }
 
         backpack.put(food.name, food);
     }
 
-    public boolean canAddTobackpack(Food food) {
+    public boolean willFitInBackpack(Food food) {
         return getBackpackWeight() + food.weight <= MAX_WEIGHT;
     }
 
@@ -56,5 +64,9 @@ class Player {
 
     public void damage(int amount) {
         health = Math.max(0, health - amount);
+    }
+
+    public void increaseHealth(int amount) {
+        health = Math.min(MAX_HEALTH, health + amount);
     }
 }

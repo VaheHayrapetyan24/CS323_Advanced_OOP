@@ -1,25 +1,14 @@
-/**
- *  This class is the main class of the "World of Zuul" application. 
- *  "World of Zuul" is a very simple, text based adventure game.  Users 
- *  can walk around some scenery. That's all. It should really be extended 
- *  to make it more interesting!
- * 
- *  To play this game, create an instance of this class and call the "play"
- *  method.
- * 
- *  This main class creates and initialises all the others: it creates all
- *  rooms, creates the parser and starts the game.  It also evaluates and
- *  executes the commands that the parser returns.
- * 
- * @author  Michael Kolling and David J. Barnes
- * @version 1.0 (February 2002)
- */
+// I'm sorry I deleted unnecessary comments wherever I saw them
+// I really don't like redundant comments especially if the code/method names
+// are clear enough. So if I have a method named doThing and a comment that says "this method does thing"
+// I find it absolutely unnecessary and even distracting.
 
 class Game implements Actionable
 {
     private Parser parser;
     private Room currentRoom;
     private CommandMapper commandMapper;
+    private Player player;
 
     public static void main(String [] args) {
         Game game = new Game();
@@ -35,11 +24,9 @@ class Game implements Actionable
     {
         createRooms();
         parser = new Parser();
+        player = new Player();
     }
 
-    /**
-     * Create all the rooms and link their exits together.
-     */
     private void createRooms()
     {
         Room outside, theatre, pub, pubBasement, tunnel, secretClub, lab, office;
@@ -50,15 +37,28 @@ class Game implements Actionable
         pub = new Room("in the campus pub");
         pubBasement = new Room("in the dark and mysterious basement of the pub. there's a door here.");
         tunnel = new Room("in a tunnel now. it's dark and dirty in here. wonder who built it");
-        secretClub = new Room("in a secret club. there's a pool table here and a bar");
-        lab = new Room("in a computing lab");
-        office = new Room("in the computing admin office");
+        secretClub = new Room("in a secret club. there's a blackjack table here and a bar");
+        lab = new Room("in a chemistry lab");
+        office = new Room("in the chemistry admin office");
 
         
-        // initialise room exits
+        
         outside.setExit(Direction.EAST, theatre, true);
         outside.setExit(Direction.SOUTH, lab, true);
         outside.setExit(Direction.WEST, pub, true);
+
+        Food water = new Food("water", 3, 5);
+        Food popcorn = new Food("popcorn", 2, 2);
+        Food beer = new Food("beer", 3, 2);
+        Food rice = new Food("rice", 5, 6);
+        Food burrito = new Food("burrito", 4, 7);
+
+        Demon chemistryTeacher = new Demon("Chemistry Teacher", "Will use magic potions on you.", 90);
+        Demon alcoholism = new Demon("Alcoholism", "Just one more drink", 4);
+        Demon gambling = new Demon("Gambling", "You can't seem to stop going to him", 5);
+        Demon dust = new Demon("Dust", "It's hard to breathe here", 2);
+
+        
 
 
         pub.setExit(Direction.DOWN, pubBasement, true);
@@ -71,6 +71,21 @@ class Game implements Actionable
         secretClub.setExit(Direction.UP, lab);
 
         lab.setExit(Direction.EAST, office, true);
+
+        outside.addItem(water);
+        theatre.addItem(popcorn);
+        pub.addItem(beer);
+        pub.addItem(rice);
+        pub.addItem(burrito);
+
+        pub.addItem(alcoholism);
+        tunnel.addItem(dust);
+        secretClub.addItem(gambling);
+        lab.addItem(chemistryTeacher);
+
+
+
+
 
         currentRoom = outside; 
     }
@@ -106,12 +121,10 @@ class Game implements Actionable
         currentRoom = room;
     }
 
-    public int getHealth() {
-        return 100;
+    public Player getPlayer() {
+        return player;
     }
-    public void setHealth() {
 
-    }
 
     public void output(String string) {
         System.out.print(string);
