@@ -21,6 +21,8 @@ enum Direction {
     SOUTH,
     WEST,
     NORTH,
+    DOWN,
+    UP,
 }
 
 class Room 
@@ -41,10 +43,24 @@ class Room
 
     /**
      * Define an exit from this room.
+     * If setOppositeDirection = true, will set the current 
+     * room as an exit for the neighbor in the opposite direction.
+     * 
+     * 
+     * Since java doesn't support default values for arguments
+     * I'll need to override.
      */
-    public void setExit(Direction direction, Room neighbor) 
+
+    public void setExit(Direction direction, Room neighbor) {
+        setExit(direction, neighbor, false); // default value: false
+    }
+    public void setExit(Direction direction, Room neighbor, boolean setOppositeDirection) 
     {
         exits.put(direction, neighbor);
+        if (setOppositeDirection) {
+            Direction oppositeDirection = getOppositeDirection(direction);
+            neighbor.setExit(oppositeDirection, this);
+        }
     }
 
     /**
@@ -64,6 +80,25 @@ class Room
     public String getLongDescription()
     {
         return "You are " + description + ".\n" + getExitString();
+    }
+
+    private Direction getOppositeDirection(Direction direction) {
+        Direction opposites[][] = {
+            { Direction.EAST, Direction.WEST },
+            { Direction.NORTH, Direction.SOUTH },
+            { Direction.UP, Direction.DOWN },
+        };
+
+        for (Direction tuple[] : opposites) {
+            if (tuple[0] == direction) {
+                return tuple[1];
+            }
+            if (tuple[1] == direction) {
+                return tuple[0];
+            }
+        }
+        // default case, shouldn't happen
+        return null;
     }
 
     /**

@@ -1,3 +1,6 @@
+import java.util.Map;
+import java.util.HashMap;
+import java.util.function.Function;
 
 interface Actionable {
     public Room getCurrentRoom();
@@ -116,35 +119,23 @@ class NoOpAction extends Action {
 
 
 class CommandMapper {
-    private static final String validCommands[] = {
-        "go", "quit", "help"
-    };
-
+    private static final String[] validCommands = {"go", "quit", "help"};
+    private static final Map<String, Function<Command, Action>> commandMap = new HashMap<>();
     private Actionable actionable;
-    private NoOpAction noOpAction;
 
     public CommandMapper(Actionable actionable) {
         this.actionable = actionable;
-        this.noOpAction = new NoOpAction(actionable);
+        registerCommands();
+    }
+
+    private void registerCommands() {
+        commandMap.put("go", cmd -> new GoRoomAction(actionable, cmd));
+        commandMap.put("quit", cmd -> new QuitAction(actionable, cmd));
+        commandMap.put("help", cmd -> new HelpAction(actionable, validCommands));
     }
 
     public Action getAction(Command command) {
         String commandWord = command.getCommandWord();
-
-        if (commandWord == null) {
-            return noOpAction;
-        }
-        
-        switch (commandWord) {
-            case "go":
-                return new GoRoomAction(actionable, command);
-            case "quit": 
-                return new QuitAction(actionable, command);
-            case "help":
-                return new HelpAction(actionable, CommandMapper.validCommands);
-            default:
-                return noOpAction;
-        }
+        return commandMap.getOrDefault(commandWord, cmd -> new NoOpAction(actionable)).apply(command);
     }
-
 }

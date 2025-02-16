@@ -43,43 +43,44 @@ class Game implements Actionable
      */
     private void createRooms()
     {
-        Room outside, theatre, pub, lab, office;
+        Room outside, theatre, pub, pubBasement, tunnel, secretClub, lab, office;
       
         // create the rooms
         outside = new Room("outside the main entrance of the university");
         theatre = new Room("in a lecture theatre");
         pub = new Room("in the campus pub");
+        pubBasement = new Room("in the dark and mysterious basement of the pub. there's a door here.");
+        tunnel = new Room("it's dark and dirty in here. you're in a tunnel now. wonder who built it.");
+        secretClub = new Room("there's a pool table here and a bar. you're in a secret club.");
         lab = new Room("in a computing lab");
         office = new Room("in the computing admin office");
+
         
         // initialise room exits
-        outside.setExit(Direction.EAST, theatre);
-        outside.setExit(Direction.SOUTH, lab);
-        outside.setExit(Direction.WEST, pub);
+        outside.setExit(Direction.EAST, theatre, true);
+        outside.setExit(Direction.SOUTH, lab, true);
+        outside.setExit(Direction.WEST, pub, true);
 
-        theatre.setExit(Direction.WEST, outside);
 
-        pub.setExit(Direction.EAST, outside);
+        pub.setExit(Direction.DOWN, pubBasement, true);
 
-        lab.setExit(Direction.NORTH, outside);
-        lab.setExit(Direction.EAST, office);
+        pubBasement.setExit(Direction.EAST, tunnel, true);
 
-        office.setExit(Direction.WEST, lab);
+        tunnel.setExit(Direction.SOUTH, secretClub, true);
 
-        currentRoom = outside;  // start game outside
+        // you can't get to the secret club from the lab
+        secretClub.setExit(Direction.UP, lab);
+
+        lab.setExit(Direction.EAST, office, true);
+
+        currentRoom = outside; 
     }
 
-    /**
-     *  Main play routine.  Loops until end of play.
-     */
     public void play() 
     {            
         commandMapper = new CommandMapper(this);
 
         printWelcome();
-
-        // Enter the main command loop.  Here we repeatedly read commands and
-        // execute them until the game is over.
                 
         boolean finished = false;
         Action action;
@@ -87,16 +88,10 @@ class Game implements Actionable
             Command command = parser.getCommand();
             action = commandMapper.getAction(command);
         } while (action.execute());
-        // while (! finished) {
-            
-        //     finished = processCommand(command);
-        // }
+
         System.out.println("Thank you for playing.  Good bye.");
     }
 
-    /**
-     * Print out the opening message for the player.
-    //  */
     private void printWelcome()
     {
         System.out.println();
@@ -106,87 +101,6 @@ class Game implements Actionable
         System.out.println();
         System.out.println(currentRoom.getLongDescription());
     }
-
-    /**
-     * Given a command, process (that is: execute) the command.
-     * If this command ends the game, true is returned, otherwise false is
-     * returned.
-     */
-    // private boolean processCommand(Command command) 
-    // {
-    //     boolean wantToQuit = false;
-
-    //     if(command.isUnknown()) {
-    //         System.out.println("I don't know what you mean...");
-    //         return false;
-    //     }
-
-    //     String commandWord = command.getCommandWord();
-    //     if (commandWord.equals("help"))
-    //         printHelp();
-    //     else if (commandWord.equals("go"))
-    //         goRoom(command);
-    //     else if (commandWord.equals("quit")) {
-    //         wantToQuit = quit(command);
-    //     }
-    //     return wantToQuit;
-    // }
-
-    // implementations of user commands:
-
-    /**
-     * Print out some help information.
-     * Here we print some stupid, cryptic message and a list of the 
-     * command words.
-     */
-    // private void printHelp() 
-    // {
-    //     System.out.println("You are lost. You are alone. You wander");
-    //     System.out.println("around at the university.");
-    //     System.out.println();
-    //     System.out.println("Your command words are:");
-    //     parser.showCommands();
-    // }
-
-    // /** 
-    //  * Try to go to one direction. If there is an exit, enter the new
-    //  * room, otherwise print an error message.
-    //  */
-    // private void goRoom(Command command) 
-    // {
-    //     if(!command.hasSecondWord()) {
-    //         // if there is no second word, we don't know where to go...
-    //         System.out.println("Go where?");
-    //         return;
-    //     }
-
-    //     String direction = command.getSecondWord();
-
-    //     // Try to leave current room.
-    //     Room nextRoom = currentRoom.getExit(direction);
-
-    //     if (nextRoom == null)
-    //         System.out.println("There is no door!");
-    //     else {
-    //         currentRoom = nextRoom;
-    //         System.out.println(currentRoom.getLongDescription());
-    //     }
-    // }
-
-    /** 
-     * "Quit" was entered. Check the rest of the command to see
-     * whether we really quit the game. Return true, if this command
-     * quits the game, false otherwise.
-     */
-    // private boolean quit(Command command) 
-    // {
-    //     if(command.hasSecondWord()) {
-    //         System.out.println("Quit what?");
-    //         return false;
-    //     }
-    //     else
-    //         return true;  // signal that we want to quit
-    // }
 
     public Room getCurrentRoom() {
         return currentRoom;
