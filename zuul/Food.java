@@ -13,11 +13,4 @@ class Food extends Item {
         this.weight = weight;
         this.healthBoost = healthBoost;
     }
-
-    // interacting with Food = eating it
-    public void interact(Player player) {
-        player.increaseHealth(healthBoost);
-    }
-
-
 }

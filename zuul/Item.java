@@ -7,5 +7,4 @@ abstract class Item {
     }
 
     public void encounter(Player player) {};
-    public void interact(Player player) {};
 }

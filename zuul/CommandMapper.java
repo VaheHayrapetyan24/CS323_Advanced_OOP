@@ -1,6 +1,8 @@
 import java.util.Map;
 import java.util.HashMap;
 import java.util.function.Function;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 interface Actionable {
     public Room getCurrentRoom();
@@ -74,18 +76,18 @@ class GoRoomAction extends Action {
 
 class HelpAction extends Action {
     private Actionable actionable;
-    private String validCommands[];
 
-    public HelpAction(Actionable actionable, String validCommands[]) {
+    public HelpAction(Actionable actionable) {
         this.actionable = actionable;
-        this.validCommands = validCommands;
     }
 
     public boolean execute() {
         actionable.output("You are lost. You are alone. You wander\n");
         actionable.output("around at the university.\n\n");
         actionable.output("Your command words are: ");
-        actionable.output(String.join(" ", validCommands) + "\n");
+        actionable.output(Arrays.stream(ValidCommand.values())
+            .map(ValidCommand::getValue)  // Map to String
+            .collect(Collectors.joining(" ")) + "\n");
 
         return true;
     }
@@ -263,7 +265,6 @@ class NoOpAction extends Action {
 
 
 class CommandMapper {
-    private static final String[] validCommands = {"go", "status", "look", "store", "eat", "quit", "help"};
     private static final Map<String, Function<Command, Action>> commandMap = new HashMap<>();
     private Actionable actionable;
 
@@ -273,14 +274,14 @@ class CommandMapper {
     }
 
     private void registerCommands() {
-        commandMap.put("go", cmd -> new GoRoomAction(actionable, cmd));
-        commandMap.put("status", cmd -> new StatusAction(actionable));
-        commandMap.put("look", cmd -> new LookAction(actionable));
-        commandMap.put("store", cmd -> new StoreAction(actionable, cmd));
-        commandMap.put("eat", cmd -> new EatAction(actionable, cmd));
+        commandMap.put(ValidCommand.GO.getValue(), cmd -> new GoRoomAction(actionable, cmd));
+        commandMap.put(ValidCommand.STATUS.getValue(), cmd -> new StatusAction(actionable));
+        commandMap.put(ValidCommand.LOOK.getValue(), cmd -> new LookAction(actionable));
+        commandMap.put(ValidCommand.STORE.getValue(), cmd -> new StoreAction(actionable, cmd));
+        commandMap.put(ValidCommand.EAT.getValue(), cmd -> new EatAction(actionable, cmd));
 
-        commandMap.put("quit", cmd -> new QuitAction(actionable, cmd));
-        commandMap.put("help", cmd -> new HelpAction(actionable, validCommands));
+        commandMap.put(ValidCommand.QUIT.getValue(), cmd -> new QuitAction(actionable, cmd));
+        commandMap.put(ValidCommand.HELP.getValue(), cmd -> new HelpAction(actionable));
 
     }
 

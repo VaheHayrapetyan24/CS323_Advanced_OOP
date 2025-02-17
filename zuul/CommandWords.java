@@ -9,11 +9,28 @@
  * @version 1.0 (February 2002)
  */
 
+enum ValidCommand {
+    GO("go"),
+    STATUS("status"),
+    LOOK("look"),
+    STORE("store"),
+    EAT("eat"),
+    QUIT("quit"),
+    HELP("help");
+
+    private final String value;
+
+    ValidCommand(String value) {
+        this.value = value;
+    }
+
+    public String getValue() {
+        return value;
+    }
+}
+
 class CommandWords
 {
-    // a constant array that holds all valid command words
-    private static final String validCommands[] = {"go", "status", "look", "store", "eat", "quit", "help"};
-
     /**
      * Constructor - initialise the command words.
      */
@@ -28,8 +45,8 @@ class CommandWords
      */
     public boolean isCommand(String aString)
     {
-        for(int i = 0; i < validCommands.length; i++) {
-            if(validCommands[i].equals(aString))
+        for(ValidCommand cmd : ValidCommand.values()) {
+            if(cmd.getValue().equals(aString))
                 return true;
         }
         // if we get here, the string was not found in the commands
@@ -41,8 +58,8 @@ class CommandWords
      */
     public void showAll() 
     {
-        for(int i = 0; i < validCommands.length; i++) {
-            System.out.print(validCommands[i] + "  ");
+        for(ValidCommand cmd : ValidCommand.values()) {
+            System.out.print(cmd.getValue() + "  ");
         }
         System.out.println();
     }

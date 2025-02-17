@@ -12,15 +12,6 @@ class Player {
         health = MAX_HEALTH;
     }
 
-    // public void eat(String name) {
-    //     if (!isInBackpack(name)) {
-    //         return;
-    //     }
-
-    //     Food food = removeFromBackpack(name);
-    //     health = Math.min(MAX_HEALTH, health + food.healthBoost);
-    // }
-
     public String getBackpackItems() {
         return "Backpack items: " + String.join(", ", backpack.keySet()) + ".";
     }
