@@ -1,6 +1,7 @@
 # Compiled object files
 *.o
 *.obj
+output
 
 # Compiled binary files
 *.exe

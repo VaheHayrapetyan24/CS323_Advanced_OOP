@@ -1,24 +1,24 @@
 #pragma once
-#include <cmath>;
+#include <cmath>
 
 class Point
 {
 public:
 Point();
 Point(Point&);
-Point(double new_x, double new_y);
+Point(float new_x, float new_y);
 
-	double get_x();
-	double get_y();
+	float get_x();
+	float get_y();
 	int int_x();
 	int int_y();
 
-	double dist(Point& that);
-	double dir(Point& that);
+	float dist(Point& that);
+	float dir(Point& that);
 
-	void shift(double dx, double dy);
+	void shift(float dx, float dy);
 
 private:
-	double x, y;
+	float x, y;
 };
 
