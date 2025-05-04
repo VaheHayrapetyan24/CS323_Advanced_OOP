@@ -10,19 +10,22 @@ class Part {
         Point anchor;
 };
 
-class Segment: public Part {
-    public:
-        Segment();
-        Segment(std::vector<Segment>* subsegments);
-    protected:
-        std::vector<Segment>* subsegments;
-};
+// class Segment: public Part {
+//     public:
+//         Segment();
+//         Segment(std::vector<Segment>* subsegments);
+//     protected:
+//         std::vector<Segment>* subsegments;
+// };
 
-class Body_segment: public Segment {
+class Body_segment: public Part {
     public:
         Body_segment(Line al);
-        Body_segment(Line al, std::vector<Segment>* subseg);
+        Body_segment(Line al, std::vector<Body_segment*>* subseg);
         void shift(float dx, float dy) override;
+        Line get_line();
+        std::vector<Body_segment*>* get_subsegments();
     private:
+        std::vector<Body_segment*>* subsegments;
         Line anchor_line;
 };

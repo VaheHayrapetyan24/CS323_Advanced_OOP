@@ -1,37 +1,48 @@
-// #include <SFML/Graphics.hpp>
+#include <SFML/Graphics.hpp>
 
 #include "segment.h"
 #include "point.h"
 #include "line.h"
 
+#include "segment_illustrate.h"
+
 int main()
 {
-    // sf::RenderWindow window(sf::VideoMode(400, 400), "Line Example");
+    sf::RenderWindow window(sf::VideoMode(4000, 4000), "Line Example");
 
-    // // Define two points
-    // sf::Vertex line[] =
-    // {
-    //     sf::Vertex(sf::Vector2f(50.f, 50.f), sf::Color::Red),
-    //     sf::Vertex(sf::Vector2f(350.f, 350.f), sf::Color::Red)
-    // };
-
-    // while (window.isOpen())
-    // {
-    //     sf::Event event;
-    //     while (window.pollEvent(event))
-    //     {
-    //         if (event.type == sf::Event::Closed)
-    //             window.close();
-    //     }
-
-    //     window.clear();
-    //     window.draw(line, 2, sf::Lines);
-    //     window.display();
-    // }
-
-    Point p1(0.f, 0.f), p2(1.f,1.f);
+    Point p1(50.f, 50.f), p2(350.f,350.f);
     Line l(p1, p2);
-    Body_segment bs(l);
+    Point p3(50.f, 350.f), p4(350.f, 50.f);
+    Line l2(p2, p3);
+    std::vector<Body_segment*> subsegments;
+    Body_segment bs2(l2);
+    subsegments.push_back(&bs2);
+
+    Body_segment bs(l, &subsegments);
+    auto fn = segment_illustrate(window);
+
+    int i = 0;
+    while (window.isOpen())
+    {
+        sf::Event event;
+        while (window.pollEvent(event))
+        {
+            if (event.type == sf::Event::Closed)
+                window.close();
+        }
+
+        window.clear();
+
+        fn(&bs);
+
+        if (i % 100 == 0) {
+            bs.shift(1, 1);
+        }
+
+        window.display();
+    }
+
+    
 
     return 0;
 }
