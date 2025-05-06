@@ -10,7 +10,8 @@ public:
     float slope();
     float length();
     void shift(float dx, float dy);
-    void rotate(float da);
+    void rotate(float phi);
+    void rotate_around(float dx, float dy, float phi);
 private:
     Point start, end;
 };

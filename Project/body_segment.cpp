@@ -3,34 +3,39 @@
 
 Body_segment::Body_segment(Line al): anchor_line(al) {}
 
-Body_segment::Body_segment(Line al, std::vector<Body_segment*>* subseg)
-    : subsegments(subseg), anchor_line(al) {}
+Body_segment::Body_segment(Line al, std::vector<Part*>* subseg): anchor_line(al) {
+    subparts = subseg;
+}
 
 void Body_segment::shift(float dx, float dy) {
     anchor_line.shift(dx, dy);
-    if (subsegments == nullptr) {
+    if (subparts == nullptr) {
         return;
     }
-    for (Body_segment* subseg : *subsegments) {
+    for (Part* subseg : *subparts) {
         subseg->shift(dx, dy);
     }
 }
 
 void Body_segment::rotate_around(float x, float y, float phi) {
-    anchor_line.get_start().rotate_around(x, y, phi);
-    anchor_line.get_end().rotate_around(x, y, phi);
-    if (subsegments == nullptr) {
+    anchor_line.rotate_around(x, y, phi);
+    if (subparts == nullptr) {
         return;
     }
-    for (Body_segment* subseg : *subsegments) {
+    for (Part* subseg : *subparts) {
         subseg->rotate_around(x, y, phi);
     }
+}
+
+void Body_segment::rotate(float phi) {
+    anchor_line.rotate_around(anchor.get_x(), anchor.get_y(), phi);
+    Part::rotate(phi);
 }
 
 Line Body_segment::get_line() {
     return anchor_line;
 }
 
-std::vector<Body_segment*>* Body_segment::get_subsegments() {
-    return subsegments;
+std::vector<Part*>* Body_segment::get_subparts() {
+    return subparts;
 }

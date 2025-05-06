@@ -1,32 +1,18 @@
 #pragma once
 #include "point.h"
 #include "line.h"
+#include "part.h"
 #include <vector>
-
-class Part {
-    public: 
-        virtual void shift(float dx, float dy) = 0;
-    protected:
-        Point anchor;
-};
-
-// class Segment: public Part {
-//     public:
-//         Segment();
-//         Segment(std::vector<Segment>* subsegments);
-//     protected:
-//         std::vector<Segment>* subsegments;
-// };
 
 class Body_segment: public Part {
     public:
         Body_segment(Line al);
-        Body_segment(Line al, std::vector<Body_segment*>* subseg);
+        Body_segment(Line al, std::vector<Part*>* subseg);
         void shift(float dx, float dy) override;
-        void rotate_around(float x, float y, float phi);
+        void rotate_around(float x, float y, float phi) override;
+        void rotate(float phi) override;
         Line get_line();
-        std::vector<Body_segment*>* get_subsegments();
+        std::vector<Part*>* get_subparts() override;
     private:
-        std::vector<Body_segment*>* subsegments;
         Line anchor_line;
 };

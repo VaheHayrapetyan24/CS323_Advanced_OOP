@@ -32,3 +32,8 @@ void Line::rotate(float da) {
         start.get_x() + len * cos(ang) - end.get_x(), 
         start.get_y() + len * sin(ang) - end.get_y());
 }
+
+void Line::rotate_around(float x, float y, float phi) {
+    start.rotate_around(x, y, phi);
+    end.rotate_around(x, y, phi);
+}

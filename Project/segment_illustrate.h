@@ -4,4 +4,4 @@
 #include "body_segment.h"
 
 
-std::function<void(Body_segment*)> segment_illustrate(sf::RenderWindow& window);
+std::function<void(Part*)> segment_illustrate(sf::RenderWindow& window);

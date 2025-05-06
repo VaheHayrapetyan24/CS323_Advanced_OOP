@@ -14,7 +14,7 @@ int main()
     Line l(p1, p2);
     Point p3(50.f, 350.f), p4(350.f, 50.f);
     Line l2(p2, p3);
-    std::vector<Body_segment*> subsegments;
+    std::vector<Part*> subsegments;
     Body_segment bs2(l2);
     subsegments.push_back(&bs2);
 
