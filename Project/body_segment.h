@@ -23,6 +23,7 @@ class Body_segment: public Part {
         Body_segment(Line al);
         Body_segment(Line al, std::vector<Body_segment*>* subseg);
         void shift(float dx, float dy) override;
+        void rotate_around(float x, float y, float phi);
         Line get_line();
         std::vector<Body_segment*>* get_subsegments();
     private:

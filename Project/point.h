@@ -17,6 +17,7 @@ Point(float new_x, float new_y);
 	float dir(Point& that);
 
 	void shift(float dx, float dy);
+	void rotate_around(float x, float y, float phi);
 
 private:
 	float x, y;

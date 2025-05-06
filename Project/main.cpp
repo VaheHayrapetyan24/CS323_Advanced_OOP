@@ -1,6 +1,6 @@
 #include <SFML/Graphics.hpp>
 
-#include "segment.h"
+#include "body_segment.h"
 #include "point.h"
 #include "line.h"
 
@@ -8,7 +8,7 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(4000, 4000), "Line Example");
+    sf::RenderWindow window(sf::VideoMode(1000, 1000), "Line Example");
 
     Point p1(50.f, 50.f), p2(350.f,350.f);
     Line l(p1, p2);
@@ -35,9 +35,10 @@ int main()
 
         fn(&bs);
 
-        if (i % 100 == 0) {
-            bs.shift(1, 1);
-        }
+        // if (i % 10 == 0) {
+            // bs.shift(1, 1);
+            bs.rotate_around(p1.get_x(), p1.get_y(), 0.1f);
+        // }
 
         window.display();
     }

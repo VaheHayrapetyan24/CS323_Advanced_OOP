@@ -5,8 +5,8 @@
 class Line {
 public:
     Line(Point& p1, Point& p2);
-    Point get_start();
-    Point get_end();
+    Point& get_start();
+    Point& get_end();
     float slope();
     float length();
     void shift(float dx, float dy);

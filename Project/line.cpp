@@ -4,13 +4,13 @@
 
 Line::Line(Point& p1, Point& p2): start{p1}, end{p2} {}
 
-Point Line::get_start() {
-    return Point{start};
+Point& Line::get_start() {
+    return start;
 }
 
 
-Point Line::get_end() {
-    return Point{end};
+Point& Line::get_end() {
+    return end;
 }
 
 float Line::slope() {
