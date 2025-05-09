@@ -2,35 +2,26 @@
 #include "line.h"
 #include <iostream>
 
-Body_segment::Body_segment(Point& anchor, Point& end): Part(anchor), anchor_line(anchor, end) {
-    subparts = nullptr;
-}
+Body_segment::Body_segment(Point& anchor, Point& end): Part(anchor), anchor_line(anchor, end) {}
 
-Body_segment::Body_segment(Line& al): Part(al.get_start()), anchor_line(al) {
-    subparts = nullptr;
-}
-
-Body_segment::Body_segment(Line& al, std::vector<Part*>* subseg): Part(al.get_start()), anchor_line(al) {
-    subparts = subseg;
-    anchor = al.get_start();
-}
+Body_segment::Body_segment(Line& al): Body_segment(al.get_start(), al.get_end()) {}
 
 void Body_segment::shift(float dx, float dy) {
     anchor_line.shift(dx, dy);
-    if (subparts == nullptr) {
+    if (subparts.size() == 0) {
         return;
     }
-    for (Part* subseg : *subparts) {
+    for (Part* subseg : subparts) {
         subseg->shift(dx, dy);
     }
 }
 
 void Body_segment::rotate_around(float x, float y, float phi) {
     anchor_line.rotate_around(x, y, phi);
-    if (subparts == nullptr) {
+    if (subparts.size() == 0) {
         return;
     }
-    for (Part* subseg : *subparts) {
+    for (Part* subseg : subparts) {
         subseg->rotate_around(x, y, phi);
     }
 }
@@ -40,6 +31,6 @@ void Body_segment::rotate(float phi) {
     Part::rotate(phi);
 }
 
-Line& Body_segment::get_line() {
-    return anchor_line;
+const Line Body_segment::get_line() {
+    return anchor_line; // TODO: copy?
 }

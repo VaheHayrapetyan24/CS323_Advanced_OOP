@@ -1,8 +1,6 @@
 #include "head.h"
 
-Head::Head(Point& anchor, Point& center): Part(anchor), center(center) {
-    subparts = nullptr;
-}
+Head::Head(Point& anchor, Point& center): Part(anchor), center(center) {}
 
 void Head::shift(float dx, float dy) {
     anchor.shift(dx, dy);
