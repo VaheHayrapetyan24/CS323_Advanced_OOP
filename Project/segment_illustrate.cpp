@@ -6,8 +6,8 @@ std::function<void(Part*)> segment_illustrate(sf::RenderWindow& window) {
         sf::Vertex line[] =
         {
             // TODO: think about solution
-            sf::Vertex(sf::Vector2f(((Body_segment*)s)->get_line().get_start().get_x(), ((Body_segment*)s)->get_line().get_start().get_y()), sf::Color::Red),
-            sf::Vertex(sf::Vector2f(((Body_segment*)s)->get_line().get_end().get_x(), ((Body_segment*)s)->get_line().get_end().get_y()), sf::Color::Red)
+            // sf::Vertex(sf::Vector2f(((Body_segment*)s)->get_line().get_start().get_x(), ((Body_segment*)s)->get_line().get_start().get_y()), sf::Color::Red),
+            // sf::Vertex(sf::Vector2f(((Body_segment*)s)->get_line().get_end().get_x(), ((Body_segment*)s)->get_line().get_end().get_y()), sf::Color::Red)
         };
 
         window.draw(line, 2, sf::Lines);

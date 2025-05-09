@@ -1,5 +1,8 @@
+#pragma once
 #include <vector>
 #include "point.h"
+
+class Body_visitor;
 
 class Part {
     public:
@@ -7,6 +10,7 @@ class Part {
         virtual void shift(float dx, float dy) = 0;
         virtual void rotate_around(float x, float y, float phi) = 0;
         virtual void rotate(float phi); // this is always around anchor
+        virtual void accept(Body_visitor* visitor) = 0;
         void add_subpart(Part* subpart);
         std::vector<Part*>* get_subparts();
     protected:

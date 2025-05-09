@@ -1,5 +1,6 @@
 #include "body_segment.h"
 #include "line.h"
+#include "body_visitor.h"
 #include <iostream>
 
 Body_segment::Body_segment(Point& anchor, Point& end): Part(anchor), anchor_line(anchor, end) {}
@@ -31,6 +32,10 @@ void Body_segment::rotate(float phi) {
     Part::rotate(phi);
 }
 
-const Line Body_segment::get_line() {
+Line Body_segment::get_line() {
     return anchor_line; // TODO: copy?
+}
+
+void Body_segment::accept(Body_visitor* visitor) {
+    visitor->visit(this);
 }

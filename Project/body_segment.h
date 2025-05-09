@@ -4,6 +4,8 @@
 #include "part.h"
 #include <vector>
 
+class Body_visitor;
+
 class Body_segment: public Part {
     public:
         Body_segment(Line& al);
@@ -11,7 +13,8 @@ class Body_segment: public Part {
         void shift(float dx, float dy) override;
         void rotate_around(float x, float y, float phi) override;
         void rotate(float phi) override;
-        const Line get_line();
+        void accept(Body_visitor* visitor) override;
+        Line get_line();
     private:
         Line anchor_line;
 };

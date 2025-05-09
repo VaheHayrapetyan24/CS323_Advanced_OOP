@@ -1,11 +1,14 @@
+#pragma once
 #include "point.h"
 #include "head.h"
 #include "body_segment.h"
 
+class Body_visitor;
 
 class Body {
     public:
         Body();
+        Body(float dx, float sy);
         // void set_axis(const Point& axis);
         // void set_c4(const Point& c4);
         // void set_t1(const Point& t1);
@@ -20,6 +23,12 @@ class Body {
         // void set_r_knee(const Point& r_knee);
         // void set_l_ankle(const Point& l_ankle);
         // void set_r_ankle(const Point& r_ankle);
+
+        Body_segment& get_l_femur();
+        Body_segment& get_r_femur();
+        Body_segment& get_spine();
+
+        void accept(Body_visitor* visitor);
 
     private:
         Point axis;
