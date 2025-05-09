@@ -7,6 +7,8 @@
 class Body_segment: public Part {
     public:
         Body_segment(Line& al);
+        Body_segment(Point& anchor, Point& end);
+        Body_segment(Point& anchor, Point& end, std::vector<Part*>* subseg);
         Body_segment(Line& al, std::vector<Part*>* subseg);
         void shift(float dx, float dy) override;
         void rotate_around(float x, float y, float phi) override;

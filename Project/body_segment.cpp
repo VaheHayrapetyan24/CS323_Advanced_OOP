@@ -1,5 +1,10 @@
 #include "body_segment.h"
+#include "line.h"
 #include <iostream>
+
+Body_segment::Body_segment(Point& anchor, Point& end): Part(anchor), anchor_line(anchor, end) {
+    subparts = nullptr;
+}
 
 Body_segment::Body_segment(Line& al): Part(al.get_start()), anchor_line(al) {
     subparts = nullptr;
