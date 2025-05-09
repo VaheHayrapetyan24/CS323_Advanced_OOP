@@ -1,6 +1,10 @@
 #include "part.h"
 
 
+Part::Part(Point& anchor): anchor(anchor) {
+    subparts = nullptr;
+}
+
 void Part::rotate(float phi) {
     if (subparts == nullptr) {
         return;
@@ -11,3 +15,8 @@ void Part::rotate(float phi) {
     }
 }
 
+
+
+std::vector<Part*>* Part::get_subparts() {
+    return subparts;
+}

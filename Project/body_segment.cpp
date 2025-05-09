@@ -1,10 +1,13 @@
 #include "body_segment.h"
 #include <iostream>
 
-Body_segment::Body_segment(Line al): anchor_line(al) {}
+Body_segment::Body_segment(Line& al): Part(al.get_start()), anchor_line(al) {
+    subparts = nullptr;
+}
 
-Body_segment::Body_segment(Line al, std::vector<Part*>* subseg): anchor_line(al) {
+Body_segment::Body_segment(Line& al, std::vector<Part*>* subseg): Part(al.get_start()), anchor_line(al) {
     subparts = subseg;
+    anchor = al.get_start();
 }
 
 void Body_segment::shift(float dx, float dy) {
@@ -32,10 +35,6 @@ void Body_segment::rotate(float phi) {
     Part::rotate(phi);
 }
 
-Line Body_segment::get_line() {
+Line& Body_segment::get_line() {
     return anchor_line;
-}
-
-std::vector<Part*>* Body_segment::get_subparts() {
-    return subparts;
 }
