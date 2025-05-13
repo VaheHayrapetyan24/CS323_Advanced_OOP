@@ -14,6 +14,7 @@ class Body_segment: public Part {
         void rotate_around(float x, float y, float phi) override;
         void rotate(float phi) override;
         void accept(Body_visitor* visitor) override;
+        float slope();
         Line get_line();
     private:
         Line anchor_line;

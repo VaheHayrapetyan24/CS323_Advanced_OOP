@@ -32,6 +32,10 @@ void Body_segment::rotate(float phi) {
     Part::rotate(phi);
 }
 
+float Body_segment::slope() {
+    return anchor_line.slope();
+}
+
 Line Body_segment::get_line() {
     return anchor_line; // TODO: copy?
 }

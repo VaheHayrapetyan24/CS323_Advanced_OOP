@@ -13,5 +13,5 @@ public:
     void rotate(float phi);
     void rotate_around(float dx, float dy, float phi);
 private:
-    Point start, end;
+    Point &start, &end;
 };

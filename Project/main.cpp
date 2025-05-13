@@ -6,7 +6,8 @@
 #include "body.h"
 #include "body_visitor.h"
 
-#include "segment_illustrate.h"
+#include "movements.h"
+// #include "segment_illustrate.h"
 
 int main()
 {
@@ -27,6 +28,8 @@ int main()
     Body_drawer bd(window);
 
     int i = 0;
+
+    MovementIterator stepper(body, 100);
     while (window.isOpen())
     {
         sf::Event event;
@@ -40,9 +43,15 @@ int main()
 
         bd.visit(&body);
 
-        body.get_l_femur().rotate(0.01f);
-        body.get_r_femur().rotate(-0.01f);
-        body.get_spine().rotate(0.01f);
+        // body.get_l_femur().rotate(0.01f);
+        // body.get_r_femur().rotate(-0.01f);
+        // body.get_spine().rotate(0.01f);
+
+        if (!stepper.make_step()) {
+            // std::cout << "Step " << i << std::endl;
+            // stepper();
+            break;
+        }
         
 
         // if (i % 10 == 0) {

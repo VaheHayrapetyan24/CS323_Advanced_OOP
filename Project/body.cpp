@@ -59,7 +59,7 @@ Body::Body(float dx, float sy):
     spine.add_subpart(&r_clavicle);
 
     l_femur.add_subpart(&l_tibia);
-    l_tibia.add_subpart(&l_foot);
+    // l_tibia.add_subpart(&l_foot);
 
     r_femur.add_subpart(&r_tibia);
     r_tibia.add_subpart(&r_foot);
@@ -67,6 +67,12 @@ Body::Body(float dx, float sy):
 
 void Body::accept(Body_visitor* visitor) {
     visitor->visit(this);
+}
+
+void Body::shift(float dx, float dy) {
+    l_femur.shift(dx, dy);
+    r_femur.shift(dx, dy);
+    spine.shift(dx, dy);
 }
 
 Body_segment& Body::get_l_femur() {
@@ -77,4 +83,8 @@ Body_segment& Body::get_r_femur() {
 }
 Body_segment& Body::get_spine() {
     return spine;
+}
+
+Body_segment& Body::get_l_tibia() {
+    return l_tibia;
 }

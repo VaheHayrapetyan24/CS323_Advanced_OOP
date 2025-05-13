@@ -14,6 +14,6 @@ class Part {
         void add_subpart(Part* subpart);
         std::vector<Part*>* get_subparts();
     protected:
-        Point anchor;
+        Point& anchor;
         std::vector<Part*> subparts;
 };

@@ -5,6 +5,7 @@
 
 class Body_visitor;
 
+// TODO: Do I want to make this a composite also?
 class Body {
     public:
         Body();
@@ -26,9 +27,12 @@ class Body {
 
         Body_segment& get_l_femur();
         Body_segment& get_r_femur();
+        Body_segment& get_l_tibia();
         Body_segment& get_spine();
 
         void accept(Body_visitor* visitor);
+
+        void shift(float dx, float dy);
 
     private:
         Point axis;
