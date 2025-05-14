@@ -6,7 +6,9 @@
 #include "body.h"
 #include "body_visitor.h"
 
-#include "movements.h"
+#include "movement/movement_iterator.h"
+#include "movement/movement.h"
+#include "movement/sequential_movement.h"
 // #include "segment_illustrate.h"
 
 int main()
@@ -29,7 +31,24 @@ int main()
 
     int i = 0;
 
-    MovementIterator stepper(body, 100);
+
+    Movement a(body, M_PI, 1000, [](Body& body, float target) {
+        // printf("target %f\n", target);
+        // printf("moving femur x %f y %f\n", body.get_l_femur().get_line().get_end().get_x(), body.get_l_femur().get_line().get_end().get_y());
+        body.get_l_femur().rotate(target);
+        // printf("moved femur x %f y %f\n", body.get_l_femur().get_line().get_end().get_x(), body.get_l_femur().get_line().get_end().get_y());
+    });
+    Movement b(body, -M_PI / 2, 100, [](Body& body, float target) {
+        body.get_l_tibia().rotate(target);
+    });
+    // printf("before stepper\n");
+    Sequential_movement stepper(body);
+    // printf("adding movement a\n");
+    stepper.add_movement(&a);
+    // printf("adding movement b\n");
+    stepper.add_movement(&b);
+    // printf("mmovements are added\n");
+    // MovementIterator stepper(body, 100);
     while (window.isOpen())
     {
         sf::Event event;
@@ -43,15 +62,21 @@ int main()
 
         bd.visit(&body);
 
+        
+
+        
+
         // body.get_l_femur().rotate(0.01f);
         // body.get_r_femur().rotate(-0.01f);
         // body.get_spine().rotate(0.01f);
 
+        // printf("stepping\n");
         if (!stepper.make_step()) {
             // std::cout << "Step " << i << std::endl;
             // stepper();
-            // break;
+            break;
         }
+        // printf("stepped\n");
         
 
         // if (i % 10 == 0) {

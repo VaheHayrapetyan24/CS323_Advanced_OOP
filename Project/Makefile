@@ -3,7 +3,7 @@ CXX = g++
 CXXFLAGS = -lsfml-graphics -lsfml-window -lsfml-system
 
 # Source files
-SRCS = $(wildcard *.cpp)
+SRCS = $(wildcard *.cpp) $(wildcard */*.cpp)
 
 # Output binary
 TARGET = output
