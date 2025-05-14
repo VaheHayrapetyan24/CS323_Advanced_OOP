@@ -15,10 +15,11 @@ class Body_visitor {
 
 class Body_drawer: public Body_visitor {
     public:
-        Body_drawer(sf::RenderWindow& window): window(window) {}
+        Body_drawer(sf::RenderWindow& window, float dy): window(window), dy(dy) {}
         void visit(Body_segment* body_segment) override;
         void visit(Head* head) override;
         void visit(Body* body) override;
     private:
+        float dy;
         sf::RenderWindow& window;
 };

@@ -29,14 +29,23 @@ void Body_segment::rotate_around(float x, float y, float phi) {
 
 void Body_segment::rotate(float phi) {
     anchor_line.rotate_around(anchor.get_x(), anchor.get_y(), phi);
-    Part::rotate(phi);
+    // Part::rotate(phi); // is this bitch the issue?
+
+    if (subparts.size() == 0) {
+        return;
+
+    }
+
+    for (Part* subpart : subparts) {
+        subpart->rotate_around(anchor.get_x(), anchor.get_y(), phi);
+    }
 }
 
 float Body_segment::slope() {
     return anchor_line.slope();
 }
 
-Line Body_segment::get_line() {
+Line& Body_segment::get_line() {
     return anchor_line; // TODO: copy?
 }
 

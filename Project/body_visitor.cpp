@@ -6,8 +6,8 @@
 void Body_drawer::visit(class Body_segment* body_segment) {
     sf::Vertex line[] =
     {
-        sf::Vertex(sf::Vector2f(body_segment->get_line().get_start().get_x(), body_segment->get_line().get_start().get_y()), sf::Color::Red),
-        sf::Vertex(sf::Vector2f(body_segment->get_line().get_end().get_x(), body_segment->get_line().get_end().get_y()), sf::Color::Red)
+        sf::Vertex(sf::Vector2f(body_segment->get_line().get_start().get_x(), dy - body_segment->get_line().get_start().get_y()), sf::Color::Red),
+        sf::Vertex(sf::Vector2f(body_segment->get_line().get_end().get_x(), dy - body_segment->get_line().get_end().get_y()), sf::Color::Red)
     };
 
     window.draw(line, 2, sf::Lines);

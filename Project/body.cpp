@@ -11,22 +11,22 @@ Body::Body(float dx, float sy):
     l_ankle(dx - 50, sy),
     r_ankle(dx + 50, sy),
 
-    l_knee(dx - 50, sy - 250),
-    r_knee(dx + 50, sy - 250),
+    l_knee(dx - 50, sy + 250),
+    r_knee(dx + 50, sy + 250),
 
-    hip(dx, sy - (250 + 245)),
-    t1(dx, sy - (250 + 245 + 300)),
-    c4(dx, sy - (250 + 245 + 300 + 70)),
-    axis(dx, sy - (250 + 245 + 300 + 50 + 80)),
+    hip(dx, sy + (250 + 245)),
+    t1(dx, sy + (250 + 245 + 300)),
+    c4(dx, sy + (250 + 245 + 300 + 70)),
+    axis(dx, sy + (250 + 245 + 300 + 50 + 80)),
 
-    l_shoulder(dx - 100, sy - (250 + 245 + 300)),
-    r_shoulder(dx + 100, sy - (250 + 245 + 300)),
+    l_shoulder(dx - 100, sy + (250 + 245 + 300)),
+    r_shoulder(dx + 100, sy + (250 + 245 + 300)),
 
-    l_elbow(dx - 150, sy - (250 + 245 + 150)),
-    r_elbow(dx + 150, sy - (250 + 245 + 150)),
+    l_elbow(dx - 150, sy + (250 + 245 + 150)),
+    r_elbow(dx + 150, sy + (250 + 245 + 150)),
 
-    l_wrist(dx - 100, sy - (250 + 245)),
-    r_wrist(dx + 100, sy - (250 + 245)),
+    l_wrist(dx - 100, sy + (250 + 245)),
+    r_wrist(dx + 100, sy + (250 + 245)),
 
     head(c4, axis),
     neck(t1, c4),
@@ -59,7 +59,7 @@ Body::Body(float dx, float sy):
     spine.add_subpart(&r_clavicle);
 
     l_femur.add_subpart(&l_tibia);
-    // l_tibia.add_subpart(&l_foot);
+    l_tibia.add_subpart(&l_foot);
 
     r_femur.add_subpart(&r_tibia);
     r_tibia.add_subpart(&r_foot);

@@ -24,8 +24,8 @@ int main()
     // Body_segment bs(l);
     // auto fn = segment_illustrate(window);
 
-    Body body(500, 1000);
-    Body_drawer bd(window);
+    Body body(500, 0);
+    Body_drawer bd(window, 1000);
 
     int i = 0;
 
@@ -50,7 +50,7 @@ int main()
         if (!stepper.make_step()) {
             // std::cout << "Step " << i << std::endl;
             // stepper();
-            break;
+            // break;
         }
         
 
