@@ -8,9 +8,6 @@ class Sequential_movement: public Movement_cluster {
 public:
     Sequential_movement(Body& body);
     bool make_step() override;
-    // void add_movement(Movement_iterator* movement) override;
-    // void add_movements(std::vector<Movement_iterator*> movements) override;
 private:
-    // std::vector<Movement_iterator*> movements;
     int current_movement_index;
 };

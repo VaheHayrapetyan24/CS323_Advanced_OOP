@@ -5,7 +5,7 @@ Sequential_movement::Sequential_movement(Body& body): Movement_cluster(body), cu
     // std::cout << "Initializing Sequential_movement with completed_steps = 0" << std::endl;
 }
 bool Sequential_movement::make_step() {
-    printf("%d\n", current_movement_index);
+    // printf("%d\n", current_movement_index);
     if (current_movement_index >= movements.size()) {
         return false;
     }

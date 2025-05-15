@@ -33,6 +33,21 @@ int main()
     stepper.add_movement(&a);
     stepper.add_movement(&b);
 
+
+    Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
+        body.get_r_femur().rotate(target);
+    });
+    Movement r_t_up(body, -M_PI/2, 200, [](Body& body, float target) {
+        body.get_r_tibia().rotate(target);
+    });
+    Parallel_movement stepper2(body);
+    stepper2.add_movement(&r_f_up);
+    stepper2.add_movement(&r_t_up);
+
+    Sequential_movement stepper3(body);
+    stepper3.add_movement(&stepper);
+    stepper3.add_movement(&stepper2);
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -48,7 +63,7 @@ int main()
 
         
 
-        if (!stepper.make_step()) {
+        if (!stepper3.make_step()) {
             break;
         }
 

@@ -88,3 +88,7 @@ Body_segment& Body::get_spine() {
 Body_segment& Body::get_l_tibia() {
     return l_tibia;
 }
+
+Body_segment& Body::get_r_tibia() {
+    return r_tibia;
+}
