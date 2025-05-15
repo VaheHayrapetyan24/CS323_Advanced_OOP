@@ -24,7 +24,7 @@ void Body_drawer::visit(class Body_segment* body_segment) {
 void Body_drawer::visit(class Head* head) {
     float radius = head->get_radius();
     sf::CircleShape circle(radius);
-    circle.setPosition(head->get_center().get_x() - radius, head->get_center().get_y() - radius);
+    circle.setPosition(head->get_center().get_x() - radius, dy - head->get_center().get_y() - radius);
     circle.setFillColor(sf::Color::Green);
     window.draw(circle);
 }
