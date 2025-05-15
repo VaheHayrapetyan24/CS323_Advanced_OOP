@@ -22,10 +22,12 @@ int main()
     int i = 0;
 
 
-    Movement a(body, M_PI, 1000, [](Body& body, float target) {
+    Movement a(body, -  M_PI / 8, 300, [](Body& body, float target) {
         body.get_l_femur().rotate(target);
+    }, [](Body& body) {
+        return body.get_l_femur().slope();
     });
-    Movement b(body, -M_PI / 2, 100, [](Body& body, float target) {
+    Movement b(body, - 3 * M_PI / 8, 250, [](Body& body, float target) {
         body.get_l_tibia().rotate(target);
     });
 
@@ -34,19 +36,19 @@ int main()
     stepper.add_movement(&b);
 
 
-    Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
-        body.get_r_femur().rotate(target);
-    });
-    Movement r_t_up(body, -M_PI/2, 200, [](Body& body, float target) {
-        body.get_r_tibia().rotate(target);
-    });
-    Parallel_movement stepper2(body);
-    stepper2.add_movement(&r_f_up);
-    stepper2.add_movement(&r_t_up);
+    // Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
+    //     body.get_r_femur().rotate(target);
+    // });
+    // Movement r_t_up(body, -M_PI/2, 200, [](Body& body, float target) {
+    //     body.get_r_tibia().rotate(target);
+    // });
+    // Parallel_movement stepper2(body);
+    // stepper2.add_movement(&r_f_up);
+    // stepper2.add_movement(&r_t_up);
 
-    Sequential_movement stepper3(body);
-    stepper3.add_movement(&stepper);
-    stepper3.add_movement(&stepper2);
+    // Sequential_movement stepper3(body);
+    // stepper3.add_movement(&stepper);
+    // stepper3.add_movement(&stepper2);
 
     while (window.isOpen())
     {
@@ -63,7 +65,7 @@ int main()
 
         
 
-        if (!stepper3.make_step()) {
+        if (!stepper.make_step()) {
             break;
         }
 

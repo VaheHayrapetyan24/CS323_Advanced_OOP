@@ -10,7 +10,8 @@ public:
         Body& body,
         float target,
         int steps,
-        void (*callback)(Body& body, float target)
+        void (*callback)(Body& body, float target),
+        float (*current_state)(Body& body) = nullptr
     );
     bool make_step() override;
 
@@ -20,6 +21,7 @@ private:
     int completed_steps;
     float target;
     void (*callback)(Body& body, float target);
+    float (*current_state)(Body& body);
     // float d_femur;
     // float d_tibia;
 };
