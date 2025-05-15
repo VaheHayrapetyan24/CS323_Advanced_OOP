@@ -7,10 +7,11 @@
 #include "body_visitor.h"
 
 // #include "movement/movement_iterator.h"
-#include "movement/basic_movement.h"
-#include "movement/sequential_movement.h"
+// #include "movement/basic_movement.h"
+// #include "movement/sequential_movement.h"
 #include "movement/parallel_movement.h"
 // #include "segment_illustrate.h"
+#include "animate.h"
 
 int main()
 {
@@ -22,21 +23,24 @@ int main()
     int i = 0;
 
 
-    Basic_movement a(body, -  M_PI / 8, 300, [](Body& body, float target) {
-        body.get_l_femur().rotate(target);
-    }, [](Body& body) {
-        return body.get_l_femur().slope();
-    });
-    Basic_movement b(body, - 3 * M_PI / 8, 250, [](Body& body, float target) {
-        body.get_l_tibia().rotate(target);
-    });
+    // Basic_movement a(body, -  M_PI / 8, 300, [](Body& body, float target) {
+    //     body.get_l_femur().rotate(target);
+    // }, [](Body& body) {
+    //     return body.get_l_femur().slope();
+    // });
+    // Basic_movement b(body, - 3 * M_PI / 8, 250, [](Body& body, float target) {
+    //     body.get_l_tibia().rotate(target);
+    // });
 
-    Parallel_movement stepper(body);
-    stepper.add_movement(&a);
-    stepper.add_movement(&b);
+    // Parallel_movement stepper(body);
+    // stepper.add_movement(&a);
+    // stepper.add_movement(&b);
 
-    std::unique_ptr<Movement_iterator> it = stepper.initiate();
+    Parallel_movement fw = Animate::step_forward(body);
 
+    printf("got fw\n");
+    std::unique_ptr<Movement_iterator> it = fw.initiate();
+    printf("initiated fw\n");
 
     // Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
     //     body.get_r_femur().rotate(target);

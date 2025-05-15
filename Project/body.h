@@ -16,6 +16,16 @@ class Body {
         Body_segment& get_l_tibia();
         Body_segment& get_r_tibia();
         Body_segment& get_spine();
+        Body_segment& get_l_clavicle();
+        Body_segment& get_r_clavicle();
+        Body_segment& get_l_humerus();
+        Body_segment& get_r_humerus();
+        Body_segment& get_l_radius();
+        Body_segment& get_r_radius();
+        Body_segment& get_l_foot();
+        Body_segment& get_r_foot();
+        Body_segment& get_neck();
+        Head& get_head();
 
         void accept(Body_visitor* visitor);
 

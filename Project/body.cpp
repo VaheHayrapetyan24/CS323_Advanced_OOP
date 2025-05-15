@@ -92,3 +92,42 @@ Body_segment& Body::get_l_tibia() {
 Body_segment& Body::get_r_tibia() {
     return r_tibia;
 }
+Body_segment& Body::get_l_foot() {
+    return l_foot;
+}
+
+Body_segment& Body::get_r_foot() {
+    return r_foot;
+}
+
+Body_segment& Body::get_l_clavicle() {
+    return l_clavicle;
+}
+
+Body_segment& Body::get_r_clavicle() {
+    return r_clavicle;
+}
+
+Body_segment& Body::get_l_humerus() {
+    return l_humerus;
+}
+
+Body_segment& Body::get_r_humerus() {
+    return r_humerus;
+}
+
+Body_segment& Body::get_l_radius() {
+    return l_radius;
+}
+
+Body_segment& Body::get_r_radius() {
+    return r_radius;
+}
+
+Body_segment& Body::get_neck() {
+    return neck;
+}
+
+Head& Body::get_head() {
+    return head;
+}
