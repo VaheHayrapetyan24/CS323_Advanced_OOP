@@ -6,8 +6,8 @@
 #include "body.h"
 #include "body_visitor.h"
 
-#include "movement/movement_iterator.h"
-#include "movement/movement.h"
+// #include "movement/movement_iterator.h"
+#include "movement/basic_movement.h"
 #include "movement/sequential_movement.h"
 #include "movement/parallel_movement.h"
 // #include "segment_illustrate.h"
@@ -22,18 +22,20 @@ int main()
     int i = 0;
 
 
-    Movement a(body, -  M_PI / 8, 300, [](Body& body, float target) {
+    Basic_movement a(body, -  M_PI / 8, 300, [](Body& body, float target) {
         body.get_l_femur().rotate(target);
     }, [](Body& body) {
         return body.get_l_femur().slope();
     });
-    Movement b(body, - 3 * M_PI / 8, 250, [](Body& body, float target) {
+    Basic_movement b(body, - 3 * M_PI / 8, 250, [](Body& body, float target) {
         body.get_l_tibia().rotate(target);
     });
 
     Parallel_movement stepper(body);
     stepper.add_movement(&a);
     stepper.add_movement(&b);
+
+    Movement_iterator it = stepper.initiate();
 
 
     // Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
@@ -65,7 +67,7 @@ int main()
 
         
 
-        if (!stepper.make_step()) {
+        if (!it.make_step()) {
             break;
         }
 
