@@ -36,7 +36,7 @@ int main()
     // stepper.add_movement(&a);
     // stepper.add_movement(&b);
 
-    Parallel_movement fw = Animate::step_forward(body);
+    Sequential_movement fw = Animate::step_forward(body);
 
     printf("got fw\n");
     std::unique_ptr<Movement_iterator> it = fw.initiate();
@@ -72,7 +72,7 @@ int main()
         
 
         if (!it->make_step()) {
-            break;
+            // break;
         }
 
         window.display();

@@ -6,7 +6,7 @@
 
 class Animate {
 public:
-    static Parallel_movement& step_forward(Body& body);
+    static Sequential_movement& step_forward(Body& body);
 private:
-    static std::unique_ptr<Parallel_movement> _step_forward;
+    static std::unique_ptr<Sequential_movement> _step_forward;
 };
