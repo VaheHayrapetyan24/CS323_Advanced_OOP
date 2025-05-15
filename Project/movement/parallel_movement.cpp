@@ -3,6 +3,6 @@
 
 Parallel_movement::Parallel_movement(Body& body): Movement_cluster(body) {}
 
-Movement_iterator Parallel_movement::initiate() {
-    return Parallel_movement_iterator(body, movements);
+std::unique_ptr<Movement_iterator> Parallel_movement::initiate() {
+    return std::make_unique<Parallel_movement_iterator>(body, movements);
 }

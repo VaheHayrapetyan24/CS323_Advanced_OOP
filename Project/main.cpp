@@ -35,7 +35,7 @@ int main()
     stepper.add_movement(&a);
     stepper.add_movement(&b);
 
-    Movement_iterator it = stepper.initiate();
+    std::unique_ptr<Movement_iterator> it = stepper.initiate();
 
 
     // Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
@@ -67,7 +67,7 @@ int main()
 
         
 
-        if (!it.make_step()) {
+        if (!it->make_step()) {
             break;
         }
 

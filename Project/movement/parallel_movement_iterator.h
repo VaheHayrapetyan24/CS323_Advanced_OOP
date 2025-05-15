@@ -9,7 +9,7 @@ class Parallel_movement_iterator: public Movement_iterator {
 friend class Parallel_movement;
 public:
     bool make_step() override;
-private:
     Parallel_movement_iterator(Body& body, std::vector<Movement*> &movements);
-    std::vector<Movement_iterator> movements;
+private:
+    std::vector<std::unique_ptr<Movement_iterator>> movements;
 };

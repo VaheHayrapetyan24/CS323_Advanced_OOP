@@ -9,8 +9,8 @@ Parallel_movement_iterator::Parallel_movement_iterator(Body& body, std::vector<M
 
 bool Parallel_movement_iterator::make_step() {
     int finished_movements = 0;
-    for (Movement_iterator& movement : movements) {
-        finished_movements += !movement.make_step();
+    for (std::unique_ptr<Movement_iterator> &movement : movements) {
+        finished_movements += !movement->make_step();
     }
 
     if (finished_movements == movements.size()) {

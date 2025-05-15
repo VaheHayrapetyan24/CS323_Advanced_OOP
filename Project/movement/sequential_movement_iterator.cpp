@@ -12,9 +12,9 @@ bool Sequential_movement_iterator::make_step() {
         return false;
     }
 
-    Movement_iterator& current_movement = movements[current_movement_index];
+    std::unique_ptr<Movement_iterator> &current_movement = movements[current_movement_index];
 
-    if (!current_movement.make_step()) {
+    if (!current_movement->make_step()) {
         current_movement_index++;
         return make_step();
     }
