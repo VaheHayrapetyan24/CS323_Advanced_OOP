@@ -22,10 +22,11 @@ int main()
 
     int i = 0;
 
-    Box box(Point(1500, 0), 200, 100, 1000);
+    Box box(Point(1000, 0), 200, 100, 1000);
     Animate animator(body);
 
-    std::unique_ptr<Movement_iterator> movement = animator.step_forward_iterator();
+    std::unique_ptr<Movement_iterator> walking_movement = animator.step_forward_iterator();
+    std::unique_ptr<Movement_iterator> stand_upright_movement = animator.stand_upright_iterator();
     while (window.isOpen())
     {
         sf::Event event;
@@ -43,10 +44,13 @@ int main()
         Line spine = body.get_spine().get_line();
 
         if (box.get_l_b_corner().get_x() - spine.get_start().get_x() > spine.length()) {
-            if (!movement->make_step()) {
-                movement = animator.step_forward_iterator();
+            if (!walking_movement->make_step()) {
+                walking_movement = animator.step_forward_iterator();
             }
         } else {
+            if (!stand_upright_movement->make_step()) {
+                // stand_upright_movement = animator.stand_upright_iterator();
+            }
             // here do the other movement
         }
 
