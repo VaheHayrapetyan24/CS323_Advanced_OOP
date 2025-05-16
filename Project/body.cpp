@@ -70,9 +70,20 @@ void Body::accept(Body_visitor* visitor) {
 }
 
 void Body::shift(float dx, float dy) {
-    l_femur.shift(dx, dy);
-    r_femur.shift(dx, dy);
-    spine.shift(dx, dy);
+    // l_femur.shift(dx, dy);
+    // hip.shift(dx, dy);
+    // t1.shift(dx, dy);
+    // r_femur.shift(dx, dy);
+    // hip.shift(-dx, -dy);
+    // spine.shift(dx, dy);
+
+    l_tibia.shift(dx, dy);
+    r_tibia.shift(dx, dy);
+    l_humerus.shift(dx, dy);
+    r_humerus.shift(dx, dy);
+    head.shift(dx, dy);
+    t1.shift(dx, dy);
+    hip.shift(dx, dy);
 }
 
 Body_segment& Body::get_l_femur() {

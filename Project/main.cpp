@@ -75,12 +75,12 @@ int main()
 
         
 
-        printf("trying to make step\n");
+        // printf("trying to make step\n");
         if (!movement->make_step()) {
             movement = animator.step_forward_iterator();
             // break;
         }
-        printf("stepped\n");
+        // printf("stepped\n");
 
         window.display();
     }

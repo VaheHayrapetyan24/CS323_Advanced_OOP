@@ -8,13 +8,14 @@ Body_segment::Body_segment(Point& anchor, Point& end): Part(anchor), anchor_line
 Body_segment::Body_segment(Line& al): Body_segment(al.get_start(), al.get_end()) {}
 
 void Body_segment::shift(float dx, float dy) {
-    anchor_line.shift(dx, dy);
-    if (subparts.size() == 0) {
-        return;
+    if (subparts.size() > 0) {
+        for (Part* subseg : subparts) {
+            subseg->shift(dx, dy);
+        }
+    } else {
+        anchor_line.get_end().shift(dx, dy);
     }
-    for (Part* subseg : subparts) {
-        subseg->shift(dx, dy);
-    }
+    anchor.shift(dx, dy);
 }
 
 void Body_segment::rotate_around(float x, float y, float phi) {
