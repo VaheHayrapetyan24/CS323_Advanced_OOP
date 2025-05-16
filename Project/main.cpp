@@ -5,7 +5,7 @@
 #include "line.h"
 #include "body.h"
 #include "body_visitor.h"
-#include "box.h"
+#include "obj.h"
 
 // #include "movement/movement_iterator.h"
 // #include "movement/basic_movement.h"
@@ -22,7 +22,7 @@ int main()
 
     int i = 0;
 
-    Box box(Point(1000, 0), 200, 100, 1000);
+    Obj obj(Point(1000, 50), 50, 1000);
     Animate animator(body);
 
     std::unique_ptr<Movement_iterator> walking_movement = animator.step_forward_iterator();
@@ -43,7 +43,7 @@ int main()
         
         Line spine = body.get_spine().get_line();
 
-        if (box.get_l_b_corner().get_x() - spine.get_start().get_x() > spine.length()) {
+        if (obj.get_center().get_x() - spine.get_start().get_x() > spine.length()) {
             if (!walking_movement->make_step()) {
                 walking_movement = animator.step_forward_iterator();
             }
@@ -54,7 +54,7 @@ int main()
             // here do the other movement
         }
 
-        box.draw(window);
+        obj.draw(window);
         window.display();
     }
 
