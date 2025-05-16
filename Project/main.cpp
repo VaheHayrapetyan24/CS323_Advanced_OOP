@@ -5,12 +5,12 @@
 #include "line.h"
 #include "body.h"
 #include "body_visitor.h"
+#include "box.h"
 
 // #include "movement/movement_iterator.h"
 // #include "movement/basic_movement.h"
 // #include "movement/sequential_movement.h"
 #include "movement/parallel_movement.h"
-// #include "segment_illustrate.h"
 #include "animate.h"
 
 int main()
@@ -22,44 +22,10 @@ int main()
 
     int i = 0;
 
-
-    // Basic_movement a(body, -  M_PI / 8, 300, [](Body& body, float target) {
-    //     body.get_l_femur().rotate(target);
-    // }, [](Body& body) {
-    //     return body.get_l_femur().slope();
-    // });
-    // Basic_movement b(body, - 3 * M_PI / 8, 250, [](Body& body, float target) {
-    //     body.get_l_tibia().rotate(target);
-    // });
-
-    // Parallel_movement stepper(body);
-    // stepper.add_movement(&a);
-    // stepper.add_movement(&b);
+    Box box(Point(1500, 0), 200, 100, 1000);
     Animate animator(body);
 
-    // Sequential_movement fw = Animate::step_forward(body);
-
-    // printf("got fw\n");
-    // std::unique_ptr<Movement_iterator> it = fw.initiate();
-    // printf("initiated fw\n");
-
-    // Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
-    //     body.get_r_femur().rotate(target);
-    // });
-    // Movement r_t_up(body, -M_PI/2, 200, [](Body& body, float target) {
-    //     body.get_r_tibia().rotate(target);
-    // });
-    // Parallel_movement stepper2(body);
-    // stepper2.add_movement(&r_f_up);
-    // stepper2.add_movement(&r_t_up);
-
-    // Sequential_movement stepper3(body);
-    // stepper3.add_movement(&stepper);
-    // stepper3.add_movement(&stepper2);
-
-    printf("trying to get iterator\n");
     std::unique_ptr<Movement_iterator> movement = animator.step_forward_iterator();
-    printf("got iterator");
     while (window.isOpen())
     {
         sf::Event event;
@@ -74,14 +40,17 @@ int main()
         bd.visit(&body);
 
         
+        Line spine = body.get_spine().get_line();
 
-        // printf("trying to make step\n");
-        if (!movement->make_step()) {
-            movement = animator.step_forward_iterator();
-            // break;
+        if (box.get_l_b_corner().get_x() - spine.get_start().get_x() > spine.length()) {
+            if (!movement->make_step()) {
+                movement = animator.step_forward_iterator();
+            }
+        } else {
+            // here do the other movement
         }
-        // printf("stepped\n");
 
+        box.draw(window);
         window.display();
     }
 

@@ -6,9 +6,6 @@
 
 #define SPEED 1
 
-
-// std::unique_ptr<Sequential_movement> Animate::_step_forward = nullptr;
-
 Animate::Animate(Body& body) : body(body) {
     // Use unique_ptr for femurs, tibias, and feet arrays
     auto femurs = std::make_unique<Body_segment*[]>(2);
