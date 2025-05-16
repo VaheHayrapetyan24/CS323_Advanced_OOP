@@ -5,9 +5,9 @@ Basic_movement_iterator::Basic_movement_iterator(
     Body& body,
     float target,
     int steps,
-    void (*callback)(Body& body, float target),
-    float (*current_state)(Body& body)
-): Movement_iterator(body), steps(steps), completed_steps(0), target(target), callback(callback), current_state(current_state) {}
+    std::function<void(Body&, float)> callback,
+    std::function<float(Body&)> current_state
+) : Movement_iterator(body), steps(steps), completed_steps(0), target(target), callback(callback), current_state(current_state) {}
 
 bool Basic_movement_iterator::make_step() {
     if (completed_steps >= steps) {

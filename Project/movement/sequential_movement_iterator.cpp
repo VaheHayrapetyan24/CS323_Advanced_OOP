@@ -8,6 +8,8 @@ Sequential_movement_iterator::Sequential_movement_iterator(Body& body, std::vect
 }
 
 bool Sequential_movement_iterator::make_step() {
+    // printf("Current movement index: %zu\n", current_movement_index);
+    // printf("Total movements: %zu\n", movements.size());
     if (current_movement_index >= movements.size()) {
         return false;
     }

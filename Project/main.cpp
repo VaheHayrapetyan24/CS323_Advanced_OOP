@@ -35,12 +35,13 @@ int main()
     // Parallel_movement stepper(body);
     // stepper.add_movement(&a);
     // stepper.add_movement(&b);
+    Animate animator(body);
 
-    Sequential_movement fw = Animate::step_forward(body);
+    // Sequential_movement fw = Animate::step_forward(body);
 
-    printf("got fw\n");
-    std::unique_ptr<Movement_iterator> it = fw.initiate();
-    printf("initiated fw\n");
+    // printf("got fw\n");
+    // std::unique_ptr<Movement_iterator> it = fw.initiate();
+    // printf("initiated fw\n");
 
     // Movement r_f_up(body, M_PI / 2, 200, [](Body& body, float target) {
     //     body.get_r_femur().rotate(target);
@@ -56,6 +57,9 @@ int main()
     // stepper3.add_movement(&stepper);
     // stepper3.add_movement(&stepper2);
 
+    printf("trying to get iterator\n");
+    std::unique_ptr<Movement_iterator> movement = animator.step_forward_iterator();
+    printf("got iterator");
     while (window.isOpen())
     {
         sf::Event event;
@@ -71,9 +75,12 @@ int main()
 
         
 
-        if (!it->make_step()) {
+        printf("trying to make step\n");
+        if (!movement->make_step()) {
+            movement = animator.step_forward_iterator();
             // break;
         }
+        printf("stepped\n");
 
         window.display();
     }
