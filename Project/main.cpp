@@ -14,6 +14,18 @@
 #include "movement/parallel_movement.h"
 #include "animate.h"
 
+bool is_point_in_circle(Point p, Point c, float r) {
+    
+    float dx = p.get_x() - c.get_x();
+    float dy = p.get_y() - c.get_y();
+    std::cout << "Point: (" << p.get_x() << ", " << p.get_y() << "), "
+              << "Circle Center: (" << c.get_x() << ", " << c.get_y() << "), "
+              << "Radius: " << r << ", "
+            << "Distance squared: " << (dx * dx + dy * dy) << ", "
+              << "Result: " << ((dx * dx + dy * dy) <= (r * r)) << std::endl;
+    return (dx * dx + dy * dy) <= (r * r);
+}
+
 int main()
 {
 
@@ -47,6 +59,39 @@ int main()
     std::unique_ptr<Movement_iterator> walking_movement = animator.step_forward_iterator();
     std::unique_ptr<Movement_iterator> stand_upright_movement = animator.stand_upright_iterator();
 
+    Parallel_movement parallel_movement(body);
+    std::unique_ptr<Movement_iterator> grab;
+
+
+    // if (obj.get_center().get_y() > body.get_l_femur().get_line().get_start().get_y()) {
+    float arm_reach = body.get_r_humerus().get_line().length() + body.get_r_radius().get_line().length();
+    Point future_point = Point(obj.get_center().get_x() - body.get_spine().get_line().length() + body.get_l_clavicle().get_line().length(), body.get_r_clavicle().get_line().get_end().get_y());
+    if (is_point_in_circle(
+        future_point,
+        obj.get_center(),
+        arm_reach
+    )) {
+        printf(" in the circleeeee\n");
+        float dir = future_point.dir(obj.get_center());
+        parallel_movement.add_movement(std::make_unique<Basic_movement>(
+            body, dir, 400,
+            [](Body& body, float target) { body.get_r_humerus().rotate(target); },
+            [](Body& body) { return body.get_r_humerus().slope(); }
+        ).release());
+        parallel_movement.add_movement(std::make_unique<Basic_movement>(
+            body, dir, 400,
+            [](Body& body, float target) { body.get_r_radius().rotate(target); },
+            [](Body& body) { return body.get_r_radius().slope(); }
+        ).release());
+        grab = parallel_movement.initiate();
+
+
+
+        // grab = std::make_unique<Basic_movement>(body, 0, 0, [](Body& body, float target) {}, [](Body& body) { return 0; });
+    } else {
+        // grab = std::make_unique<Basic_movement>(body, 0, 0, [](Body& body, float target) {}, [](Body& body) { return 0; });
+    }
+
     while (window.isOpen())
     {
         sf::Event event;
@@ -69,9 +114,13 @@ int main()
             }
         } else {
             if (!stand_upright_movement->make_step()) {
-                // stand_upright_movement = animator.stand_upright_iterator();
+                // here check if obj is upper than hip
+
+                if (!grab->make_step()) {
+
+                }
+                
             }
-            // here do the other movement
         }
 
         obj.draw(window);
