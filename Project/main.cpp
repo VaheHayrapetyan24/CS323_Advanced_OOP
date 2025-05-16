@@ -1,4 +1,5 @@
 #include <SFML/Graphics.hpp>
+#include <iostream>
 
 #include "body_segment.h"
 #include "point.h"
@@ -15,18 +16,37 @@
 
 int main()
 {
-    sf::RenderWindow window(sf::VideoMode(2000, 2000), "Line Example");
 
-    Body body(500, 0);
+    float body_x_diff = 300;
+    Body body(body_x_diff, 0);
+    
+
+    int x, y;
+    while (true) {
+        std::cout << "Enter x coordinate (0 < x < 950): ";
+        std::cin >> x;
+        std::cout << "Enter y coordinate (50 < y < 1950): ";
+        std::cin >> y;
+
+        x += body_x_diff;
+        printf("%d, %d, %d\n", x, y, (int)body.get_r_foot().get_line().get_end().get_x());
+
+        if (x > (int) body.get_r_foot().get_line().get_end().get_x() && x < 1450 && y > 50 && y < 1950) {
+            break;
+        } else {
+            std::cout << "Invalid coordinates. Please try again.\n";
+        }
+    }
+
+    sf::RenderWindow window(sf::VideoMode(2000, 2000), "Line Example");
     Body_drawer bd(window, 1000);
 
-    int i = 0;
-
-    Obj obj(Point(1000, 50), 50, 1000);
+    Obj obj(Point((float)x, (float)y), 50, 1000);
     Animate animator(body);
 
     std::unique_ptr<Movement_iterator> walking_movement = animator.step_forward_iterator();
     std::unique_ptr<Movement_iterator> stand_upright_movement = animator.stand_upright_iterator();
+
     while (window.isOpen())
     {
         sf::Event event;
