@@ -13,6 +13,8 @@ public:
     Animate(Body& body);
     std::unique_ptr<Movement_iterator> step_forward_iterator();
     std::unique_ptr<Movement_iterator> stand_upright_iterator();
+    // this one is a bit different, so returning the movement itself
+    Parallel_movement* make_grab_movement(float arm_angle, float spine_angle);
 private:
     Sequential_movement* make_forward_movement(
         Body_segment* femurs[2],

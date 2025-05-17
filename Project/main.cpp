@@ -70,47 +70,29 @@ int main()
 
 
     Body_drawer bd(window, ground_y);
-
+    
     Obj obj(Point((float)x, (float)y), OBJ_RADIUS, ground_y);
+
     Animate animator(body);
 
     std::unique_ptr<Movement_iterator> walking_movement = animator.step_forward_iterator();
     std::unique_ptr<Movement_iterator> stand_upright_movement = animator.stand_upright_iterator();
 
-    Parallel_movement grabbing_movement(body);
 
     float arm_reach = HUMERUS_LENGTH + RADIUS_LENGTH + MIDDLE_FINGER_LENGTH;
 
     float x_diff = obj.get_center().get_x() - arm_reach - body.get_r_clavicle().get_line().get_end().get_x();
+
     Point future_shoulder = Point(body.get_r_clavicle().get_line().get_end().get_x() + x_diff, body.get_r_clavicle().get_line().get_end().get_y());
     Point future_hip = Point(body.get_spine().get_line().get_start().get_x() + x_diff, body.get_spine().get_line().get_start().get_y());
+
     float spine_angle = get_spine_rotation_angle(future_hip, future_shoulder, obj.get_center(), arm_reach);
 
     float arm_angle = get_arm_rotation_angle(future_shoulder, future_hip, obj.get_center(), arm_reach, spine_angle - M_PI_2);
-    grabbing_movement.add_movement(std::make_unique<Basic_movement>(
-        body, spine_angle, 400,
-        [](Body& body, float target) { 
-            body.get_spine().rotate(target);
-        },
-        [](Body& body) { return body.get_spine().slope(); }
-    ).release());
-    grabbing_movement.add_movement(std::make_unique<Basic_movement>(
-        body, arm_angle, 400,
-        [](Body& body, float target) {
-            body.get_r_humerus().rotate(target);
-        },
-        [](Body& body) { return body.get_r_humerus().slope(); }
-    ).release());
 
-    grabbing_movement.add_movement(std::make_unique<Basic_movement>(
-        body, arm_angle, 400,
-        [](Body& body, float target) { 
-            body.get_r_radius().rotate(target);
-        },
-        [](Body& body) { return body.get_r_radius().slope(); }
-    ).release());
+    Parallel_movement* grabbing_movement(animator.make_grab_movement(arm_angle, spine_angle));
 
-    std::unique_ptr<Movement_iterator> grab = grabbing_movement.initiate();
+    std::unique_ptr<Movement_iterator> grab = grabbing_movement->initiate();
 
     while (window.isOpen())
     {
@@ -144,6 +126,8 @@ int main()
         window.display();
     }
 
+    delete grabbing_movement;
+    grabbing_movement = nullptr;
     
 
     return 0;

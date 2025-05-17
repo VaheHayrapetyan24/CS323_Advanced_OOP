@@ -7,26 +7,13 @@
 #define SPEED 0.5
 
 Animate::Animate(Body& body) : body(body) {
-    // Use unique_ptr for femurs, tibias, and feet arrays
-    auto femurs = std::make_unique<Body_segment*[]>(2);
-    auto tibias = std::make_unique<Body_segment*[]>(2);
-    auto feet = std::make_unique<Body_segment*[]>(2);
-    auto radii = std::make_unique<Body_segment*[]>(2);
-    auto humeri = std::make_unique<Body_segment*[]>(2);
+    Body_segment* femurs[2] = {&body.get_l_femur(), &body.get_r_femur()};
+    Body_segment* tibias[2] = {&body.get_l_tibia(), &body.get_r_tibia()};
+    Body_segment* feet[2] = {&body.get_l_foot(), &body.get_r_foot()};
+    Body_segment* radii[2] = {&body.get_l_radius(), &body.get_r_radius()};
+    Body_segment* humeri[2] = {&body.get_l_humerus(), &body.get_r_humerus()};
 
-    femurs[0] = &body.get_l_femur();
-    femurs[1] = &body.get_r_femur();
-    tibias[0] = &body.get_l_tibia();
-    tibias[1] = &body.get_r_tibia();
-    feet[0] = &body.get_l_foot();
-    feet[1] = &body.get_r_foot();
-    radii[0] = &body.get_l_radius();
-    radii[1] = &body.get_r_radius();
-    humeri[0] = &body.get_l_humerus();
-    humeri[1] = &body.get_r_humerus();
-
-
-    l_step_forward = make_forward_movement(femurs.get(), tibias.get(), feet.get(), radii.get(), humeri.get());
+    l_step_forward = make_forward_movement(femurs, tibias, feet, radii, humeri);
 
     femurs[0] = &body.get_r_femur();
     femurs[1] = &body.get_l_femur();
@@ -39,7 +26,7 @@ Animate::Animate(Body& body) : body(body) {
     humeri[0] = &body.get_r_humerus();
     humeri[1] = &body.get_l_humerus();
 
-    r_step_forward = make_forward_movement(femurs.get(), tibias.get(), feet.get(), radii.get(), humeri.get());
+    r_step_forward = make_forward_movement(femurs, tibias, feet, radii, humeri);
 
     stand_upright = make_stand_upright_movement();
 }
@@ -54,6 +41,34 @@ std::unique_ptr<Movement_iterator> Animate::step_forward_iterator() {
 
 std::unique_ptr<Movement_iterator> Animate::stand_upright_iterator() {
     return stand_upright->initiate();
+}
+
+Parallel_movement* Animate::make_grab_movement(float arm_angle, float spine_angle) {
+    Parallel_movement* grabbing_movement = new Parallel_movement(body);
+    grabbing_movement->add_movement(std::make_unique<Basic_movement>(
+        body, spine_angle, 400,
+        [](Body& body, float target) { 
+            body.get_spine().rotate(target);
+        },
+        [](Body& body) { return body.get_spine().slope(); }
+    ).release());
+    grabbing_movement->add_movement(std::make_unique<Basic_movement>(
+        body, arm_angle, 400,
+        [](Body& body, float target) {
+            body.get_r_humerus().rotate(target);
+        },
+        [](Body& body) { return body.get_r_humerus().slope(); }
+    ).release());
+
+    grabbing_movement->add_movement(std::make_unique<Basic_movement>(
+        body, arm_angle, 400,
+        [](Body& body, float target) { 
+            body.get_r_radius().rotate(target);
+        },
+        [](Body& body) { return body.get_r_radius().slope(); }
+    ).release());
+
+    return grabbing_movement;
 }
 
 Sequential_movement* Animate::make_forward_movement(
@@ -99,7 +114,6 @@ Sequential_movement* Animate::make_forward_movement(
             b_humerus->rotate(target);
             f_humerus->rotate(-target);
         }
-        // [b_humerus](Body& body) { return b_humerus->slope(); }
     ).release());
     f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
         body, M_PI / 50, 100 * SPEED,
@@ -107,27 +121,20 @@ Sequential_movement* Animate::make_forward_movement(
             b_radius->rotate(target);
             f_radius->rotate(-target);
         }
-        // [b_radius](Body& body) { return b_radius->slope(); }
     ).release());
     
 
     auto b_leg_up = std::make_unique<Parallel_movement>(body);
-
-    auto b_femur_up = std::make_unique<Basic_movement>(
+    b_leg_up->add_movement(std::make_unique<Basic_movement>(
         body, - M_PI / 4, 400 * SPEED,
         [b_femur](Body& body, float target) { b_femur->rotate(target); },
         [b_femur](Body& body) { return b_femur->slope(); }
-    );
-    auto b_tibia_up = std::make_unique<Basic_movement>(
+    ).release());
+    b_leg_up->add_movement(std::make_unique<Basic_movement>(
         body, -3 * M_PI / 4, 350 * SPEED,
         [b_tibia](Body& body, float target) { b_tibia->rotate(target); },
         [b_tibia](Body& body) { return b_tibia->slope(); }
-    );
-
-    // TODO: doesn't this just defeat the whole purpose of unique pointer?
-    // f_leg_up->add_movement(b_foot_fix.release());
-    b_leg_up->add_movement(b_femur_up.release());
-    b_leg_up->add_movement(b_tibia_up.release());
+    ).release());
 
     auto f_go_back_b_up = std::make_unique<Parallel_movement>(body);
     f_go_back_b_up->add_movement(b_leg_up.release());
@@ -147,7 +154,6 @@ Sequential_movement* Animate::make_forward_movement(
             b_humerus->rotate(-target);
             f_humerus->rotate(target);
         }
-        // [b_humerus](Body& body) { return b_humerus->slope(); }
     ).release());
     f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
         body, 3 * M_PI / 120, 400 * SPEED,
@@ -155,7 +161,6 @@ Sequential_movement* Animate::make_forward_movement(
             b_radius->rotate(-target);
             f_radius->rotate(target);
         }
-        // [b_radius](Body& body) { return b_radius->slope(); }
     ).release());
     
 
@@ -196,7 +201,6 @@ Sequential_movement* Animate::make_forward_movement(
             b_humerus->rotate(-target);
             f_humerus->rotate(target);
         }
-        // [b_humerus](Body& body) { return b_humerus->slope(); }
     ).release());
     f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
         body, M_PI / 120, 200 * SPEED,
@@ -204,7 +208,6 @@ Sequential_movement* Animate::make_forward_movement(
             b_radius->rotate(-target);
             f_radius->rotate(target);
         }
-        // [b_radius](Body& body) { return b_radius->slope(); }
     ).release());
    
 
@@ -263,3 +266,4 @@ Sequential_movement* Animate::make_stand_upright_movement() {
 
     return movement.release();
 }
+
