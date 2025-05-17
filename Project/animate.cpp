@@ -4,13 +4,15 @@
 #include "movement/sequential_movement.h"
 #include "movement/parallel_movement.h"
 
-#define SPEED 1/3
+#define SPEED 0.5
 
 Animate::Animate(Body& body) : body(body) {
     // Use unique_ptr for femurs, tibias, and feet arrays
     auto femurs = std::make_unique<Body_segment*[]>(2);
     auto tibias = std::make_unique<Body_segment*[]>(2);
     auto feet = std::make_unique<Body_segment*[]>(2);
+    auto radii = std::make_unique<Body_segment*[]>(2);
+    auto humeri = std::make_unique<Body_segment*[]>(2);
 
     femurs[0] = &body.get_l_femur();
     femurs[1] = &body.get_r_femur();
@@ -18,8 +20,13 @@ Animate::Animate(Body& body) : body(body) {
     tibias[1] = &body.get_r_tibia();
     feet[0] = &body.get_l_foot();
     feet[1] = &body.get_r_foot();
+    radii[0] = &body.get_l_radius();
+    radii[1] = &body.get_r_radius();
+    humeri[0] = &body.get_l_humerus();
+    humeri[1] = &body.get_r_humerus();
 
-    l_step_forward = make_forward_movement(femurs.get(), tibias.get(), feet.get());
+
+    l_step_forward = make_forward_movement(femurs.get(), tibias.get(), feet.get(), radii.get(), humeri.get());
 
     femurs[0] = &body.get_r_femur();
     femurs[1] = &body.get_l_femur();
@@ -27,8 +34,12 @@ Animate::Animate(Body& body) : body(body) {
     tibias[1] = &body.get_l_tibia();
     feet[0] = &body.get_r_foot();
     feet[1] = &body.get_l_foot();
+    radii[0] = &body.get_r_radius();
+    radii[1] = &body.get_l_radius();
+    humeri[0] = &body.get_r_humerus();
+    humeri[1] = &body.get_l_humerus();
 
-    r_step_forward = make_forward_movement(femurs.get(), tibias.get(), feet.get());
+    r_step_forward = make_forward_movement(femurs.get(), tibias.get(), feet.get(), radii.get(), humeri.get());
 
     stand_upright = make_stand_upright_movement();
 }
@@ -45,14 +56,61 @@ std::unique_ptr<Movement_iterator> Animate::stand_upright_iterator() {
     return stand_upright->initiate();
 }
 
-Sequential_movement* Animate::make_forward_movement(Body_segment* femurs[2], Body_segment* tibias[2], Body_segment* feet[2]) {
+Sequential_movement* Animate::make_forward_movement(
+    Body_segment* femurs[2],
+    Body_segment* tibias[2], 
+    Body_segment* feet[2],
+    Body_segment* radii[2],
+    Body_segment* humeri[2]
+) {
     Body_segment* b_femur = femurs[0];
     Body_segment* f_femur = femurs[1];
     Body_segment* b_tibia = tibias[0];
     Body_segment* f_tibia = tibias[1];
     Body_segment* b_foot = feet[0];
     Body_segment* f_foot = feet[1];
+    Body_segment* b_radius = radii[0];
+    Body_segment* f_radius = radii[1];
+    Body_segment* b_humerus = humeri[0];
+    Body_segment* f_humerus = humeri[1];
     
+   
+    auto f_leg_straighten = std::make_unique<Parallel_movement>(body);
+    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
+        body, -3 * M_PI / 8, 100 * SPEED,
+        [f_femur](Body& body, float target) { f_femur->rotate(target); },
+        [f_femur](Body& body) { return f_femur->slope(); }
+    ).release());
+    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
+        body, - 3 * M_PI / 8, 100 * SPEED,
+        [f_tibia](Body& body, float target) { f_tibia->rotate(target); },
+        [f_tibia](Body& body) { return f_tibia->slope(); }
+    ).release());
+    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
+        body, M_PI / 8, 100 * SPEED,
+        [f_foot](Body& body, float target) { f_foot->rotate(target); },
+        [f_foot](Body& body) { return f_foot->slope(); }
+    ).release());
+
+    // arms sequence
+    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
+        body, M_PI / 40, 100 * SPEED,
+        [b_humerus, f_humerus](Body& body, float target) { 
+            b_humerus->rotate(target);
+            f_humerus->rotate(-target);
+        }
+        // [b_humerus](Body& body) { return b_humerus->slope(); }
+    ).release());
+    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
+        body, M_PI / 50, 100 * SPEED,
+        [b_radius, f_radius](Body& body, float target) { 
+            b_radius->rotate(target);
+            f_radius->rotate(-target);
+        }
+        // [b_radius](Body& body) { return b_radius->slope(); }
+    ).release());
+    
+
     auto b_leg_up = std::make_unique<Parallel_movement>(body);
 
     auto b_femur_up = std::make_unique<Basic_movement>(
@@ -71,25 +129,6 @@ Sequential_movement* Animate::make_forward_movement(Body_segment* femurs[2], Bod
     b_leg_up->add_movement(b_femur_up.release());
     b_leg_up->add_movement(b_tibia_up.release());
 
-    auto f_leg_straighten = std::make_unique<Parallel_movement>(body);
-    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
-        body, -3 * M_PI / 8, 100 * SPEED,
-        [f_femur](Body& body, float target) { f_femur->rotate(target); },
-        [f_femur](Body& body) { return f_femur->slope(); }
-    ).release());
-    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
-        body, - 3 * M_PI / 8, 100 * SPEED,
-        [f_tibia](Body& body, float target) { f_tibia->rotate(target); },
-        [f_tibia](Body& body) { return f_tibia->slope(); }
-    ).release());
-    f_leg_straighten->add_movement(std::make_unique<Basic_movement>(
-        body, M_PI / 8, 100 * SPEED,
-        [f_foot](Body& body, float target) { f_foot->rotate(target); },
-        [f_foot](Body& body) { return f_foot->slope(); }
-    ).release());
-
-
-
     auto f_go_back_b_up = std::make_unique<Parallel_movement>(body);
     f_go_back_b_up->add_movement(b_leg_up.release());
     f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
@@ -102,6 +141,23 @@ Sequential_movement* Animate::make_forward_movement(Body_segment* femurs[2], Bod
         },
         [f_femur](Body& body) { return f_femur->slope(); }
     ).release());
+    f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
+        body, 3 * M_PI / 200, 400 * SPEED,
+        [b_humerus, f_humerus](Body& body, float target) { 
+            b_humerus->rotate(-target);
+            f_humerus->rotate(target);
+        }
+        // [b_humerus](Body& body) { return b_humerus->slope(); }
+    ).release());
+    f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
+        body, 3 * M_PI / 120, 400 * SPEED,
+        [b_radius, f_radius](Body& body, float target) { 
+            b_radius->rotate(-target);
+            f_radius->rotate(target);
+        }
+        // [b_radius](Body& body) { return b_radius->slope(); }
+    ).release());
+    
 
 
     auto b_straighen = std::make_unique<Parallel_movement>(body);
@@ -134,6 +190,23 @@ Sequential_movement* Animate::make_forward_movement(Body_segment* femurs[2], Bod
         },
         [f_tibia](Body& body) { return f_tibia->slope(); }
     ).release());
+    f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
+        body, M_PI / 200, 200 * SPEED,
+        [b_humerus, f_humerus](Body& body, float target) { 
+            b_humerus->rotate(-target);
+            f_humerus->rotate(target);
+        }
+        // [b_humerus](Body& body) { return b_humerus->slope(); }
+    ).release());
+    f_go_back_b_up->add_movement(std::make_unique<Basic_movement>(
+        body, M_PI / 120, 200 * SPEED,
+        [b_radius, f_radius](Body& body, float target) { 
+            b_radius->rotate(-target);
+            f_radius->rotate(target);
+        }
+        // [b_radius](Body& body) { return b_radius->slope(); }
+    ).release());
+   
 
     auto legs_prepare = std::make_unique<Sequential_movement>(body);
     legs_prepare->add_movement(f_leg_straighten.release());

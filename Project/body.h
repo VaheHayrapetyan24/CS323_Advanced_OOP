@@ -4,7 +4,7 @@
 #include "body_segment.h"
 
 
-#define SCALE 1
+#define SCALE 1 / 4
 
 #define HEAD_RADIUS 50 * SCALE
 #define NECK_LENGTH 50 * SCALE
@@ -12,7 +12,7 @@
 #define FEMUR_LENGTH 250 * SCALE
 #define TIBIA_LENGTH 250 * SCALE
 #define FOOT_LENGTH 100 * SCALE
-#define CLAVICLE_LENGTH 100 * SCALE
+#define CLAVICLE_LENGTH 50 * SCALE
 #define HUMERUS_LENGTH 150 * SCALE
 #define RADIUS_LENGTH 150 * SCALE
 
