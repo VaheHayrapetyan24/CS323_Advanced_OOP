@@ -18,30 +18,37 @@ bool is_point_in_circle(Point p, Point c, float r) {
     
     float dx = p.get_x() - c.get_x();
     float dy = p.get_y() - c.get_y();
-    std::cout << "Point: (" << p.get_x() << ", " << p.get_y() << "), "
-              << "Circle Center: (" << c.get_x() << ", " << c.get_y() << "), "
-              << "Radius: " << r << ", "
-            << "Distance squared: " << (dx * dx + dy * dy) << ", "
-              << "Result: " << ((dx * dx + dy * dy) <= (r * r)) << std::endl;
+    // std::cout << "Point: (" << p.get_x() << ", " << p.get_y() << "), "
+    //           << "Circle Center: (" << c.get_x() << ", " << c.get_y() << "), "
+    //           << "Radius: " << r << ", "
+    //         << "Distance squared: " << (dx * dx + dy * dy) << ", "
+    //           << "Result: " << ((dx * dx + dy * dy) <= (r * r)) << std::endl;
     return (dx * dx + dy * dy) <= (r * r);
 }
 
-float get_spine_rotation_angle(Point& anchor, Point& clavicle, Point& obj_center, float arm_reach) {
+float get_spine_rotation_angle(Point& hip, Point& shoulder, Point& obj_center, float arm_reach) {
     printf("get_spine_rotation_angle\n");
-    float slope = anchor.dir(clavicle);
+    float slope = hip.dir(shoulder);
+    float diff = slope - M_PI_2;
     printf("slope %f\n", slope);
-    float dist = anchor.dist(clavicle);
+    float dist = hip.dist(shoulder);
     printf("dist %f\n", dist);
-    for (; slope > -M_PI_2; slope -= 0.1) {
-        printf("angle %f\n", slope);
-        float x = anchor.get_x() + dist * cos(slope);
-        float y = anchor.get_y() + dist * sin(slope);
+    for (; slope > -M_PI_2; slope -= 0.001) {
+        // printf("angle %f\n", slope);
+        float x = hip.get_x() + dist * cos(slope);
+        float y = hip.get_y() + dist * sin(slope);
         if (is_point_in_circle(Point(x, y), obj_center, arm_reach)) {
-            return slope;
+            return slope - diff;
         }
     }
     return 0;
+}
 
+float get_arm_rotation_angle(Point shoulder, Point hip, Point& obj_center, float arm_reach, float spine_slope) {
+    printf("shoulder %f, %f\n", shoulder.get_x(), shoulder.get_y());
+    shoulder.rotate_around(hip.get_x(), hip.get_y(), spine_slope);
+    printf("shoulder %f, %f\n", shoulder.get_x(), shoulder.get_y());
+    return shoulder.dir(obj_center);
 }
 
 int main()
@@ -86,17 +93,18 @@ int main()
 
     float x_diff = obj.get_center().get_x() - body.get_spine().get_line().length() - body.get_spine().get_line().get_start().get_x();
 
-    Point future_point = Point(obj.get_center().get_x() - body.get_spine().get_line().length() + body.get_l_clavicle().get_line().length(), body.get_r_clavicle().get_line().get_end().get_y());
+    printf("x_diff %f\n", x_diff);
+    Point future_shoulder = Point(obj.get_center().get_x() - body.get_spine().get_line().length() + body.get_r_clavicle().get_line().length(), body.get_r_clavicle().get_line().get_end().get_y());
 
     // Point c = obj.get_center();
 
     if (is_point_in_circle(
-        future_point,
+        future_shoulder,
         obj.get_center(),
         arm_reach
     )) {
         printf(" in the circleeeee\n");
-        float dir = future_point.dir(obj.get_center());
+        float dir = future_shoulder.dir(obj.get_center());
         parallel_movement.add_movement(std::make_unique<Basic_movement>(
             body, dir, 400,
             [](Body& body, float target) { body.get_r_humerus().rotate(target); },
@@ -116,15 +124,39 @@ int main()
         Point future_hip = Point(body.get_spine().get_line().get_start().get_x() + x_diff, body.get_spine().get_line().get_start().get_y());
         printf("future shoulder %f, %f\n", future_shoulder.get_x(), future_shoulder.get_y());
         printf("future hip %f, %f\n", future_hip.get_x(), future_hip.get_y());
-        float angle = get_spine_rotation_angle(future_hip, future_shoulder, obj.get_center(), arm_reach);
-        printf("angleee %f\n", angle);
+        float spine_angle = get_spine_rotation_angle(future_hip, future_shoulder, obj.get_center(), arm_reach);
+
+        float arm_angle = get_arm_rotation_angle(future_shoulder, future_hip, obj.get_center(), arm_reach, spine_angle - M_PI_2);
+        printf("angleee %f\n", spine_angle);
         parallel_movement.add_movement(std::make_unique<Basic_movement>(
-            body, angle, 400,
+            body, spine_angle, 400,
             [](Body& body, float target) { 
-                printf("rotate spine %f\n", target);
+                // printf("rotate spine %f\n", target);
                 body.get_spine().rotate(target);
             },
             [](Body& body) { return body.get_spine().slope(); }
+        ).release());
+
+        // Sequential_movement* arm_straighten = std::make_unique<Sequential_movement>(body).release();
+
+
+
+        parallel_movement.add_movement(std::make_unique<Basic_movement>(
+            body, arm_angle, 400,
+            [](Body& body, float target) { 
+                // printf("rotate spine %f\n", target);
+                body.get_r_humerus().rotate(target);
+            },
+            [](Body& body) { return body.get_r_humerus().slope(); }
+        ).release());
+
+        parallel_movement.add_movement(std::make_unique<Basic_movement>(
+            body, arm_angle, 400,
+            [](Body& body, float target) { 
+                // printf("rotate spine %f\n", target);
+                body.get_r_radius().rotate(target);
+            },
+            [](Body& body) { return body.get_r_radius().slope(); }
         ).release());
         printf("movement added\n");
         
