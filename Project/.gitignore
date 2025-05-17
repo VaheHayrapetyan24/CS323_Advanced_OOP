@@ -1,0 +1,45 @@
+# Compiled object files
+*.o
+*.obj
+output
+
+# Compiled binary files
+*.exe
+*.out
+*.app
+
+# Libraries
+*.lib
+*.a
+*.so
+*.dll
+*.dylib
+
+# Debug files
+*.dSYM/
+*.pdb
+
+# IDE specific files
+/.idea/
+/*.iml
+*.vscode/
+/*.code-workspace
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Build directories
+/build/
+/bin/
+/dist/
+
+# Temporary files
+*.tmp
+*.temp
+*.log
+
+# Backup files
+*.bak
+*.old
+*~
