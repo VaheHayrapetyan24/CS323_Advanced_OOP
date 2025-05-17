@@ -3,6 +3,21 @@
 #include "head.h"
 #include "body_segment.h"
 
+
+#define SCALE 0.2
+
+#define HEAD_RADIUS 50 * SCALE
+#define NECK_LENGTH 50 * SCALE
+#define SPINE_LENGTH 300 * SCALE
+#define FEMUR_LENGTH 250 * SCALE
+#define TIBIA_LENGTH 250 * SCALE
+#define FOOT_LENGTH 100 * SCALE
+#define CLAVICLE_LENGTH 100 * SCALE
+#define HUMERUS_LENGTH 150 * SCALE
+#define RADIUS_LENGTH 150 * SCALE
+
+#define BODY_HEIGHT TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH
+
 class Body_visitor;
 
 // TODO: Do I want to make this a composite also?

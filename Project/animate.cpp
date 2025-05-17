@@ -4,20 +4,7 @@
 #include "movement/sequential_movement.h"
 #include "movement/parallel_movement.h"
 
-#define SPEED 1
-
-
-// float calculate_rotation_angle(float x1, float y1, float x2, float y2, float px, float py) {
-//     float dx = x2 - x1;
-//     float dy = y2 - y1;
-//     float px_rel = px - x1;
-//     float py_rel = py - y1;
-
-//     float numerator = px_rel * dy - py_rel * dx;
-//     float denominator = px_rel * dx + py_rel * dy;
-
-//     return atan2(numerator, denominator);
-// }
+#define SPEED 1/3
 
 Animate::Animate(Body& body) : body(body) {
     // Use unique_ptr for femurs, tibias, and feet arrays

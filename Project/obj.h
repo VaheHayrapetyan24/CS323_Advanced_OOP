@@ -2,7 +2,9 @@
 
 #include <SFML/Graphics.hpp>
 #include "point.h"
+#include "body.h"
 
+#define OBJ_RADIUS 50 * SCALE
 
 class Obj {
 public:

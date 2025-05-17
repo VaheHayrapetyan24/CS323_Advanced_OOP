@@ -5,28 +5,28 @@
 Body::Body(): Body(0, 0){}
 
 Body::Body(float dx, float sy):
-    l_foot_end(dx - 150, sy),
-    r_foot_end(dx + 150, sy),
+    l_foot_end(dx, sy - FOOT_LENGTH),
+    r_foot_end(dx, sy - FOOT_LENGTH),
 
-    l_ankle(dx - 50, sy),
-    r_ankle(dx + 50, sy),
+    l_ankle(dx, sy),
+    r_ankle(dx, sy),
 
-    l_knee(dx - 50, sy + 250),
-    r_knee(dx + 50, sy + 250),
+    l_knee(dx, sy + TIBIA_LENGTH),
+    r_knee(dx, sy + TIBIA_LENGTH),
 
-    hip(dx, sy + (250 + 245)),
-    t1(dx, sy + (250 + 245 + 300)),
-    c4(dx, sy + (250 + 245 + 300 + 70)),
-    axis(dx, sy + (250 + 245 + 300 + 50 + 80)),
+    hip(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH),
+    t1(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH),
+    c4(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + NECK_LENGTH),
+    axis(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + NECK_LENGTH + HEAD_RADIUS),
 
-    l_shoulder(dx - 100, sy + (250 + 245 + 300)),
-    r_shoulder(dx + 100, sy + (250 + 245 + 300)),
+    l_shoulder(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH),
+    r_shoulder(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH),
 
-    l_elbow(dx - 150, sy + (250 + 245 + 150)),
-    r_elbow(dx + 150, sy + (250 + 245 + 150)),
+    l_elbow(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH + HUMERUS_LENGTH),
+    r_elbow(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH + HUMERUS_LENGTH),
 
-    l_wrist(dx - 100, sy + (250 + 245)),
-    r_wrist(dx + 100, sy + (250 + 245)),
+    l_wrist(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH + HUMERUS_LENGTH + RADIUS_LENGTH),
+    r_wrist(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH + HUMERUS_LENGTH + RADIUS_LENGTH),
 
     head(c4, axis),
     neck(t1, c4),
@@ -40,12 +40,13 @@ Body::Body(float dx, float sy):
     spine(hip, t1),
 
     l_foot(l_ankle, l_foot_end),
-    l_tibia(l_knee, l_ankle),
+    l_tibia(l_knee, l_ankle),   
     l_femur(hip, l_knee),
 
     r_foot(r_ankle, r_foot_end),
     r_tibia(r_knee, r_ankle),
-    r_femur(hip, r_knee) {
+    r_femur(hip, r_knee)
+{   
     neck.add_subpart(&head);
     
     l_clavicle.add_subpart(&l_humerus);
@@ -63,20 +64,23 @@ Body::Body(float dx, float sy):
 
     r_femur.add_subpart(&r_tibia);
     r_tibia.add_subpart(&r_foot);
+
+    r_clavicle.rotate(-M_PI_2);
+    l_clavicle.rotate(M_PI_2);
+
+    r_foot.rotate(M_PI_2);
+    l_foot.rotate(M_PI_2);
+
+    r_humerus.rotate(-M_PI_2);
+    l_humerus.rotate(M_PI_2);
 }
 
 void Body::accept(Body_visitor* visitor) {
     visitor->visit(this);
 }
 
+// TODO: Fix shift like rotate
 void Body::shift(float dx, float dy) {
-    // l_femur.shift(dx, dy);
-    // hip.shift(dx, dy);
-    // t1.shift(dx, dy);
-    // r_femur.shift(dx, dy);
-    // hip.shift(-dx, -dy);
-    // spine.shift(dx, dy);
-
     l_tibia.shift(dx, dy);
     r_tibia.shift(dx, dy);
     l_humerus.shift(dx, dy);

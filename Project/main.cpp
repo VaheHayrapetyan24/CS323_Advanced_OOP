@@ -11,8 +11,10 @@
 #include "movement/parallel_movement.h"
 #include "animate.h"
 
+#define X_PIXELS 2000
+#define Y_PIXELS 1200
+
 bool is_point_in_circle(Point p, Point c, float r) {
-    
     float dx = p.get_x() - c.get_x();
     float dy = p.get_y() - c.get_y();
     return (dx * dx + dy * dy) <= (r * r);
@@ -45,27 +47,31 @@ int main()
     
 
     int x, y;
+    int max_x = X_PIXELS - 2 * body_x_diff - 2 * OBJ_RADIUS;
+    int max_y = BODY_HEIGHT;
     while (true) {
-        std::cout << "Enter x coordinate (0 < x < 1000): ";
+        std::cout << "Enter x coordinate (0 < x < " << max_x << "): ";
         std::cin >> x;
-        std::cout << "Enter y coordinate (0 < y < 900): ";
+        std::cout << "Enter y coordinate (0 < y < " << max_y << "): ";
         std::cin >> y;
 
-        if (x > 0 && x < 1000 && y > 0 && y < 900) {
+        if (x > 0 && x < max_x && y > 0 && y < max_y) {
             x += body_x_diff + (int) body.get_r_foot().get_line().get_end().get_x();
-            y += 50;
+            y += OBJ_RADIUS;
             break;
         } else {
             std::cout << "Invalid coordinates. Please try again.\n";
         }
-
-        
     }
 
-    sf::RenderWindow window(sf::VideoMode(2000, 2000), "Line Example");
-    Body_drawer bd(window, 1000);
+    sf::RenderWindow window(sf::VideoMode(X_PIXELS, Y_PIXELS), "Line Example");
 
-    Obj obj(Point((float)x, (float)y), 50, 1000);
+    float ground_y = 9 * Y_PIXELS / 10;
+
+
+    Body_drawer bd(window, ground_y);
+
+    Obj obj(Point((float)x, (float)y), OBJ_RADIUS, ground_y);
     Animate animator(body);
 
     std::unique_ptr<Movement_iterator> walking_movement = animator.step_forward_iterator();
@@ -73,7 +79,7 @@ int main()
 
     Parallel_movement grabbing_movement(body);
 
-    float arm_reach = body.get_r_humerus().get_line().length() + body.get_r_radius().get_line().length();
+    float arm_reach = HUMERUS_LENGTH + RADIUS_LENGTH;
 
     float x_diff = obj.get_center().get_x() - arm_reach - body.get_r_clavicle().get_line().get_end().get_x();
     Point future_shoulder = Point(body.get_r_clavicle().get_line().get_end().get_x() + x_diff, body.get_r_clavicle().get_line().get_end().get_y());
@@ -122,7 +128,7 @@ int main()
         
         Line spine = body.get_spine().get_line();
 
-        if (obj.get_center().get_x() - spine.get_start().get_x() > arm_reach + body.get_r_clavicle().get_line().length()) {
+        if (obj.get_center().get_x() - spine.get_start().get_x() > arm_reach + CLAVICLE_LENGTH) {
             if (!walking_movement->make_step()) {
                 walking_movement = animator.step_forward_iterator();
             }
