@@ -139,7 +139,12 @@ Sequential_movement* Animate::make_forward_movement(Body_segment* femurs[2], Bod
     b_straigten_f_tibia_rotate->add_movement(b_straighen.release());
     b_straigten_f_tibia_rotate->add_movement(std::make_unique<Basic_movement>(
         body, - 11 * M_PI / 16, 200 * SPEED,
-        [f_tibia](Body& body, float target) { f_tibia->rotate(target); },
+        [f_tibia, f_foot](Body& body, float target) { 
+            float orig_x = f_foot->get_line().get_end().get_x();
+            f_tibia->rotate(target);
+            float new_x = f_foot->get_line().get_end().get_x();
+            body.shift(orig_x - new_x, 0);
+        },
         [f_tibia](Body& body) { return f_tibia->slope(); }
     ).release());
 
