@@ -111,16 +111,14 @@ Body::Body(float dx, float sy):
     l_humerus.rotate(M_PI_2);
 
     l_thumb.rotate(M_PI_4);
-    l_middle_finger.rotate(- M_PI / 8);
-    l_ring_finger.rotate(- M_PI / 4);
-    l_pinky_finger.rotate(- 3 * M_PI / 8);
-
-
+    l_middle_finger.rotate(- M_PI / 12);
+    l_ring_finger.rotate(- M_PI / 6);
+    l_pinky_finger.rotate(- 3 * M_PI / 12);
 
     r_thumb.rotate(- M_PI_4);
-    r_middle_finger.rotate(M_PI / 8);
-    r_ring_finger.rotate(M_PI / 4);
-    r_pinky_finger.rotate(3 * M_PI / 8);
+    r_middle_finger.rotate(M_PI / 12);
+    r_ring_finger.rotate(M_PI / 6);
+    r_pinky_finger.rotate(3 * M_PI / 12);
 }
 
 void Body::accept(Body_visitor* visitor) {

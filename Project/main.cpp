@@ -79,7 +79,7 @@ int main()
 
     Parallel_movement grabbing_movement(body);
 
-    float arm_reach = HUMERUS_LENGTH + RADIUS_LENGTH;
+    float arm_reach = HUMERUS_LENGTH + RADIUS_LENGTH + MIDDLE_FINGER_LENGTH;
 
     float x_diff = obj.get_center().get_x() - arm_reach - body.get_r_clavicle().get_line().get_end().get_x();
     Point future_shoulder = Point(body.get_r_clavicle().get_line().get_end().get_x() + x_diff, body.get_r_clavicle().get_line().get_end().get_y());
