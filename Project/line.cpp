@@ -18,7 +18,6 @@ float Line::slope() {
 }
 
 float Line::length() {
-    // return original_length;
     return start.dist(end);
 }
 

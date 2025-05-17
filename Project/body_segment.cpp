@@ -15,14 +15,9 @@ void Body_segment::shift(float dx, float dy, bool f) {
     if (subparts.size() == 0) {
         return;
     }
-    // if (subparts.size() > 0) {
     for (Part* subseg : subparts) {
         subseg->shift(dx, dy, false);
     }
-    // } else {
-    //     anchor_line.get_end().shift(dx, dy);
-    // }
-    // anchor.shift(dx, dy);
 }
 
 void Body_segment::rotate_around(float x, float y, float phi, bool f) {

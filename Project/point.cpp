@@ -39,33 +39,16 @@ int Point::int_y()
 
 float Point::dist(Point& that)
 {
-    // return dist((const Point&)that);
 	return sqrt((x - that.x) * (x - that.x) + (y - that.y) * (y - that.y));
 }
 
-// float Point::dist(const Point& that)
-// {
-// 	return sqrt((x - that.x) * (x - that.x) + (y - that.y) * (y - that.y));
-// }
-
-// todo: this doesn't really work
 void Point::rotate_around(float x, float y, float phi)
 {
     float cos_phi = cos(phi);
     float sin_phi = sin(phi);
 
-    float new_x = cos_phi * (this->x - x) - sin_phi * (this->y - y) + x;
-    float new_y = sin_phi * (this->x - x) + cos_phi * (this->y - y) + y;
-
-    // float distance = sqrt((new_x - x) * (new_x - x) + (new_y - y) * (new_y - y));
-    // float original_distance = sqrt((this->x - x) * (this->x - x) + (this->y - y) * (this->y - y));
-    // if (original_distance - distance != 0) {
-    //     new_x = x + (new_x - x) * (original_distance / distance);
-    //     new_y = y + (new_y - y) * (original_distance / distance);
-    // }
-
-    this->x = new_x;
-    this->y = new_y;
+    this->x = cos_phi * (this->x - x) - sin_phi * (this->y - y) + x;
+    this->y = sin_phi * (this->x - x) + cos_phi * (this->y - y) + y;
 }
 
 float Point::dir(Point& that)
