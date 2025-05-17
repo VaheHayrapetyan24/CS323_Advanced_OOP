@@ -1,8 +1,8 @@
 #include "sequential_movement_iterator.h"
 #include "sequential_movement.h"
 
-Sequential_movement_iterator::Sequential_movement_iterator(Body& body, std::vector<Movement*> &movements)
-    : Movement_iterator(body), current_movement_index(0) {
+Sequential_movement_iterator::Sequential_movement_iterator(std::vector<Movement*> &movements)
+    : current_movement_index(0) {
     for (Movement* movement : movements) 
         this->movements.push_back(movement->initiate());
 }

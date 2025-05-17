@@ -1,8 +1,7 @@
 #include "parallel_movement_iterator.h"
 #include "parallel_movement.h"
 
-Parallel_movement_iterator::Parallel_movement_iterator(Body& body, std::vector<Movement*> &movements)
-    : Movement_iterator(body) {
+Parallel_movement_iterator::Parallel_movement_iterator(std::vector<Movement*> &movements) {
         for (Movement* movement : movements) 
             this->movements.push_back(movement->initiate());
 }

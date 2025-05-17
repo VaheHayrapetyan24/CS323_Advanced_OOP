@@ -18,6 +18,7 @@ public:
     );
 
 private:
+    Body& body;
     int steps;
     int completed_steps;
     float target;

@@ -1,7 +1,5 @@
 #include "movement_cluster.h"
 
-Movement_cluster::Movement_cluster(Body& body): Movement(body) {}
-
 Movement_cluster::~Movement_cluster() {
     for (auto movement : movements) {
         delete movement;

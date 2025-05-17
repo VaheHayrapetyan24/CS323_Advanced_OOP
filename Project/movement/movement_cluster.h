@@ -4,7 +4,6 @@
 
 class Movement_cluster: public Movement {
 public:
-    Movement_cluster(Body& body);
     ~Movement_cluster();
     virtual void add_movement(Movement* movement);
     virtual void add_movements(std::vector<Movement*> movements);

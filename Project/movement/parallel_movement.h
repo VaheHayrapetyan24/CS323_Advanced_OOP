@@ -7,6 +7,5 @@
 
 class Parallel_movement: public Movement_cluster {
 public:
-    Parallel_movement(Body& body);
     std::unique_ptr<Movement_iterator> initiate() override;
 };
