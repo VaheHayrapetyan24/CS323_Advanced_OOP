@@ -39,8 +39,14 @@ int Point::int_y()
 
 float Point::dist(Point& that)
 {
+    // return dist((const Point&)that);
 	return sqrt((x - that.x) * (x - that.x) + (y - that.y) * (y - that.y));
 }
+
+// float Point::dist(const Point& that)
+// {
+// 	return sqrt((x - that.x) * (x - that.x) + (y - that.y) * (y - that.y));
+// }
 
 // todo: this doesn't really work
 void Point::rotate_around(float x, float y, float phi)

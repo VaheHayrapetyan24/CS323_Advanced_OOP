@@ -8,8 +8,11 @@ void Head::shift(float dx, float dy) {
     center.shift(dx, dy);
 }
 
-void Head::rotate_around(float x, float y, float phi) {
-    anchor.rotate_around(x, y, phi);
+void Head::rotate_around(float x, float y, float phi, bool f) {
+    if (f) {
+        anchor.rotate_around(x, y, phi);
+    }
+    
     center.rotate_around(x, y, phi);
 }
 

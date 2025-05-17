@@ -14,6 +14,8 @@ Point(float new_x, float new_y);
 	int int_y();
 
 	float dist(Point& that);
+	// float dist(const Point& that);
+
 	float dir(Point& that);
 
 	void shift(float dx, float dy);

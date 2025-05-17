@@ -18,27 +18,28 @@ void Body_segment::shift(float dx, float dy) {
     anchor.shift(dx, dy);
 }
 
-void Body_segment::rotate_around(float x, float y, float phi) {
-    anchor_line.rotate_around(x, y, phi);
+void Body_segment::rotate_around(float x, float y, float phi, bool f) {
+    if (f) {
+        anchor_line.rotate_around(x, y, phi);
+    }
+    anchor_line.get_end().rotate_around(x, y, phi);
     if (subparts.size() == 0) {
         return;
     }
     for (Part* subseg : subparts) {
-        subseg->rotate_around(x, y, phi);
+        subseg->rotate_around(x, y, phi, false);
     }
 }
 
 void Body_segment::rotate(float phi) {
-    anchor_line.rotate_around(anchor.get_x(), anchor.get_y(), phi);
-    // Part::rotate(phi); // is this bitch the issue?
+    anchor_line.get_end().rotate_around(anchor.get_x(), anchor.get_y(), phi);
 
     if (subparts.size() == 0) {
         return;
-
     }
 
     for (Part* subpart : subparts) {
-        subpart->rotate_around(anchor.get_x(), anchor.get_y(), phi);
+        subpart->rotate_around(anchor.get_x(), anchor.get_y(), phi, false);
     }
 }
 
