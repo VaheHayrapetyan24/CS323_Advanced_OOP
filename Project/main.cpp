@@ -46,19 +46,20 @@ int main()
 
     int x, y;
     while (true) {
-        std::cout << "Enter x coordinate (0 < x < 950): ";
+        std::cout << "Enter x coordinate (0 < x < 1000): ";
         std::cin >> x;
-        std::cout << "Enter y coordinate (50 < y < 1950): ";
+        std::cout << "Enter y coordinate (0 < y < 900): ";
         std::cin >> y;
 
-        x += body_x_diff;
-        printf("%d, %d, %d\n", x, y, (int)body.get_r_foot().get_line().get_end().get_x());
-
-        if (x > (int) body.get_r_foot().get_line().get_end().get_x() && x < 1450 && y > 50 && y < 1950) {
+        if (x > 0 && x < 1000 && y > 0 && y < 900) {
+            x += body_x_diff + (int) body.get_r_foot().get_line().get_end().get_x();
+            y += 50;
             break;
         } else {
             std::cout << "Invalid coordinates. Please try again.\n";
         }
+
+        
     }
 
     sf::RenderWindow window(sf::VideoMode(2000, 2000), "Line Example");
