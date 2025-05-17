@@ -91,34 +91,34 @@ int main()
     // if (obj.get_center().get_y() > body.get_l_femur().get_line().get_start().get_y()) {
     float arm_reach = body.get_r_humerus().get_line().length() + body.get_r_radius().get_line().length();
 
-    float x_diff = obj.get_center().get_x() - body.get_spine().get_line().length() - body.get_spine().get_line().get_start().get_x();
+    float x_diff = obj.get_center().get_x() - arm_reach - body.get_r_clavicle().get_line().get_end().get_x();
 
     printf("x_diff %f\n", x_diff);
-    Point future_shoulder = Point(obj.get_center().get_x() - body.get_spine().get_line().length() + body.get_r_clavicle().get_line().length(), body.get_r_clavicle().get_line().get_end().get_y());
+    // Point future_shoulder = Point(body.get_r_clavicle().get_line().get_end().get_x() + x_diff, body.get_r_clavicle().get_line().get_end().get_y());
 
     // Point c = obj.get_center();
 
-    if (is_point_in_circle(
-        future_shoulder,
-        obj.get_center(),
-        arm_reach
-    )) {
-        printf(" in the circleeeee\n");
-        float dir = future_shoulder.dir(obj.get_center());
-        parallel_movement.add_movement(std::make_unique<Basic_movement>(
-            body, dir, 400,
-            [](Body& body, float target) { body.get_r_humerus().rotate(target); },
-            [](Body& body) { return body.get_r_humerus().slope(); }
-        ).release());
-        parallel_movement.add_movement(std::make_unique<Basic_movement>(
-            body, dir, 400,
-            [](Body& body, float target) { body.get_r_radius().rotate(target); },
-            [](Body& body) { return body.get_r_radius().slope(); }
-        ).release());
-        // grab = parallel_movement.initiate();
+    // if (is_point_in_circle(
+    //     future_shoulder,
+    //     obj.get_center(),
+    //     arm_reach
+    // )) {
+    //     printf(" in the circleeeee\n");
+    //     float dir = future_shoulder.dir(obj.get_center());
+    //     parallel_movement.add_movement(std::make_unique<Basic_movement>(
+    //         body, dir, 400,
+    //         [](Body& body, float target) { body.get_r_humerus().rotate(target); },
+    //         [](Body& body) { return body.get_r_humerus().slope(); }
+    //     ).release());
+    //     parallel_movement.add_movement(std::make_unique<Basic_movement>(
+    //         body, dir, 400,
+    //         [](Body& body, float target) { body.get_r_radius().rotate(target); },
+    //         [](Body& body) { return body.get_r_radius().slope(); }
+    //     ).release());
+    //     // grab = parallel_movement.initiate();
 
-        // grab = std::make_unique<Basic_movement>(body, 0, 0, [](Body& body, float target) {}, [](Body& body) { return 0; });
-    } else {
+    //     // grab = std::make_unique<Basic_movement>(body, 0, 0, [](Body& body, float target) {}, [](Body& body) { return 0; });
+    // } else {
         printf("elseseeeeee\n");
         Point future_shoulder = Point(body.get_r_clavicle().get_line().get_end().get_x() + x_diff, body.get_r_clavicle().get_line().get_end().get_y());
         Point future_hip = Point(body.get_spine().get_line().get_start().get_x() + x_diff, body.get_spine().get_line().get_start().get_y());
@@ -163,7 +163,7 @@ int main()
 
 
         // grab = std::make_unique<Basic_movement>(body, 0, 0, [](Body& body, float target) {}, [](Body& body) { return 0; });
-    }
+    // }
     grab = parallel_movement.initiate();
 
     while (window.isOpen())
@@ -182,7 +182,7 @@ int main()
         
         Line spine = body.get_spine().get_line();
 
-        if (obj.get_center().get_x() - spine.get_start().get_x() > spine.length()) {
+        if (obj.get_center().get_x() - spine.get_start().get_x() > arm_reach + body.get_r_clavicle().get_line().length()) {
             if (!walking_movement->make_step()) {
                 walking_movement = animator.step_forward_iterator();
             }
