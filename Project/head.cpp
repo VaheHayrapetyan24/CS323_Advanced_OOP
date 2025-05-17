@@ -3,8 +3,10 @@
 
 Head::Head(Point& anchor, Point& center): Part(anchor), center(center) {}
 
-void Head::shift(float dx, float dy) {
-    anchor.shift(dx, dy);
+void Head::shift(float dx, float dy, bool f) {
+    if (f) {
+        anchor.shift(dx, dy);
+    }
     center.shift(dx, dy);
 }
 

@@ -4,7 +4,7 @@
 #include "body_segment.h"
 
 
-#define SCALE 0.2
+#define SCALE 1
 
 #define HEAD_RADIUS 50 * SCALE
 #define NECK_LENGTH 50 * SCALE
@@ -16,6 +16,12 @@
 #define HUMERUS_LENGTH 150 * SCALE
 #define RADIUS_LENGTH 150 * SCALE
 
+#define THUMB_LENGTH 50 * SCALE
+#define INDEX_FINGER_LENGTH 70 * SCALE
+#define MIDDLE_FINGER_LENGTH 80 * SCALE
+#define RING_FINGER_LENGTH 70 * SCALE
+#define PINKY_FINGER_LENGTH 60 * SCALE
+
 #define BODY_HEIGHT TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH
 
 class Body_visitor;
@@ -26,21 +32,35 @@ class Body {
         Body();
         Body(float dx, float sy);
 
-        Body_segment& get_l_femur();
-        Body_segment& get_r_femur();
-        Body_segment& get_l_tibia();
-        Body_segment& get_r_tibia();
+        Head& get_head();
+        
+        Body_segment& get_neck();
         Body_segment& get_spine();
+
         Body_segment& get_l_clavicle();
         Body_segment& get_r_clavicle();
         Body_segment& get_l_humerus();
         Body_segment& get_r_humerus();
         Body_segment& get_l_radius();
         Body_segment& get_r_radius();
+        
+        Body_segment& get_l_thumb();
+        Body_segment& get_l_index_finger();
+        Body_segment& get_l_middle_finger();
+        Body_segment& get_l_ring_finger();
+        Body_segment& get_l_pinky_finger();
+        Body_segment& get_r_thumb();
+        Body_segment& get_r_index_finger();
+        Body_segment& get_r_middle_finger();
+        Body_segment& get_r_ring_finger();
+        Body_segment& get_r_pinky_finger();
+
+        Body_segment& get_l_femur();
+        Body_segment& get_r_femur();
+        Body_segment& get_l_tibia();
+        Body_segment& get_r_tibia();
         Body_segment& get_l_foot();
         Body_segment& get_r_foot();
-        Body_segment& get_neck();
-        Head& get_head();
 
         void accept(Body_visitor* visitor);
 
@@ -65,6 +85,18 @@ class Body {
         Point l_foot_end;
         Point r_foot_end;
 
+        Point l_thumb_end;
+        Point l_index_finger_end;
+        Point l_middle_finger_end;
+        Point l_ring_finger_end;
+        Point l_pinky_finger_end;
+
+        Point r_thumb_end;
+        Point r_index_finger_end;
+        Point r_middle_finger_end;
+        Point r_ring_finger_end;
+        Point r_pinky_finger_end;
+
         Head head;
         Body_segment neck;
         Body_segment spine;
@@ -80,4 +112,16 @@ class Body {
         Body_segment r_tibia;
         Body_segment l_foot;
         Body_segment r_foot;
+
+        Body_segment l_thumb;
+        Body_segment l_index_finger;
+        Body_segment l_middle_finger;
+        Body_segment l_ring_finger;
+        Body_segment l_pinky_finger;
+
+        Body_segment r_thumb;
+        Body_segment r_index_finger;
+        Body_segment r_middle_finger;
+        Body_segment r_ring_finger;
+        Body_segment r_pinky_finger;
 };

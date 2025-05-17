@@ -28,6 +28,18 @@ Body::Body(float dx, float sy):
     l_wrist(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH + HUMERUS_LENGTH + RADIUS_LENGTH),
     r_wrist(dx, sy + TIBIA_LENGTH + FEMUR_LENGTH + SPINE_LENGTH + CLAVICLE_LENGTH + HUMERUS_LENGTH + RADIUS_LENGTH),
 
+    l_thumb_end(dx, l_wrist.get_y() + THUMB_LENGTH),
+    l_index_finger_end(dx, l_wrist.get_y() + INDEX_FINGER_LENGTH),
+    l_middle_finger_end(dx, l_wrist.get_y() + MIDDLE_FINGER_LENGTH),
+    l_ring_finger_end(dx, l_wrist.get_y() + RING_FINGER_LENGTH),
+    l_pinky_finger_end(dx, l_wrist.get_y() + PINKY_FINGER_LENGTH),
+
+    r_thumb_end(dx, r_wrist.get_y() + THUMB_LENGTH),
+    r_index_finger_end(dx,r_wrist.get_y() + INDEX_FINGER_LENGTH),
+    r_middle_finger_end(dx,r_wrist.get_y() + MIDDLE_FINGER_LENGTH),
+    r_ring_finger_end(dx,r_wrist.get_y() + RING_FINGER_LENGTH),
+    r_pinky_finger_end(dx,r_wrist.get_y() + PINKY_FINGER_LENGTH),
+
     head(c4, axis),
     neck(t1, c4),
     l_radius(l_elbow, l_wrist),
@@ -45,7 +57,19 @@ Body::Body(float dx, float sy):
 
     r_foot(r_ankle, r_foot_end),
     r_tibia(r_knee, r_ankle),
-    r_femur(hip, r_knee)
+    r_femur(hip, r_knee),
+
+    l_thumb(l_wrist, l_thumb_end),
+    l_index_finger(l_wrist, l_index_finger_end),
+    l_middle_finger(l_wrist, l_middle_finger_end),
+    l_ring_finger(l_wrist, l_ring_finger_end),
+    l_pinky_finger(l_wrist, l_pinky_finger_end),
+
+    r_thumb(r_wrist, r_thumb_end),
+    r_index_finger(r_wrist, r_index_finger_end),
+    r_middle_finger(r_wrist, r_middle_finger_end),
+    r_ring_finger(r_wrist, r_ring_finger_end),
+    r_pinky_finger(r_wrist, r_pinky_finger_end)
 {   
     neck.add_subpart(&head);
     
@@ -65,6 +89,18 @@ Body::Body(float dx, float sy):
     r_femur.add_subpart(&r_tibia);
     r_tibia.add_subpart(&r_foot);
 
+    l_radius.add_subpart(&l_thumb);
+    l_radius.add_subpart(&l_index_finger);
+    l_radius.add_subpart(&l_middle_finger);
+    l_radius.add_subpart(&l_ring_finger);
+    l_radius.add_subpart(&l_pinky_finger);
+
+    r_radius.add_subpart(&r_thumb);
+    r_radius.add_subpart(&r_index_finger);
+    r_radius.add_subpart(&r_middle_finger);
+    r_radius.add_subpart(&r_ring_finger);
+    r_radius.add_subpart(&r_pinky_finger);
+
     r_clavicle.rotate(-M_PI_2);
     l_clavicle.rotate(M_PI_2);
 
@@ -73,21 +109,28 @@ Body::Body(float dx, float sy):
 
     r_humerus.rotate(-M_PI_2);
     l_humerus.rotate(M_PI_2);
+
+    l_thumb.rotate(M_PI_4);
+    l_middle_finger.rotate(- M_PI / 8);
+    l_ring_finger.rotate(- M_PI / 4);
+    l_pinky_finger.rotate(- 3 * M_PI / 8);
+
+
+
+    r_thumb.rotate(- M_PI_4);
+    r_middle_finger.rotate(M_PI / 8);
+    r_ring_finger.rotate(M_PI / 4);
+    r_pinky_finger.rotate(3 * M_PI / 8);
 }
 
 void Body::accept(Body_visitor* visitor) {
     visitor->visit(this);
 }
 
-// TODO: Fix shift like rotate
 void Body::shift(float dx, float dy) {
-    l_tibia.shift(dx, dy);
-    r_tibia.shift(dx, dy);
-    l_humerus.shift(dx, dy);
-    r_humerus.shift(dx, dy);
-    head.shift(dx, dy);
-    t1.shift(dx, dy);
-    hip.shift(dx, dy);
+    l_femur.shift(dx, dy, false);
+    r_femur.shift(dx, dy, false);
+    spine.shift(dx, dy);
 }
 
 Body_segment& Body::get_l_femur() {
